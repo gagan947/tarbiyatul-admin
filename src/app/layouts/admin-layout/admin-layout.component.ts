@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
+import { ApiService } from '../../services/api.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-layout',
@@ -10,23 +12,41 @@ import { environment } from '../../../environments/environment';
   templateUrl: './admin-layout.component.html',
   styleUrls: []
 })
-export class AdminLayoutComponent implements OnInit {
+export class AdminLayoutComponent implements OnInit, OnDestroy {
   isSidebarOpen = false;
   adminName = 'Ali';
   adminEmail = '';
   profileImage: string | null = null;
+  private profileSub?: Subscription;
+
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
+    // Initial Load from local storage
     const adminUserJson = localStorage.getItem('admin_user');
     if (adminUserJson) {
-      try {
-        const adminUser = JSON.parse(adminUserJson);
-        this.adminName = adminUser.name || 'Ali';
-        this.adminEmail = adminUser.email || '';
-        this.profileImage = adminUser.profileImage || null;
-      } catch (e) {
-        console.error('Error parsing admin user details', e);
+      this.updateProfileState(JSON.parse(adminUserJson));
+    }
+
+    // Subscribe to real-time profile updates
+    this.profileSub = this.apiService.profileUpdated$.subscribe((updatedUser) => {
+      if (updatedUser) {
+        this.updateProfileState(updatedUser);
       }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.profileSub?.unsubscribe();
+  }
+
+  private updateProfileState(adminUser: any): void {
+    try {
+      this.adminName = adminUser.name || adminUser.fullName || adminUser.firstName || 'Ali';
+      this.adminEmail = adminUser.email || '';
+      this.profileImage = adminUser.profileImage || null;
+    } catch (e) {
+      console.error('Error updating admin profile state', e);
     }
   }
 

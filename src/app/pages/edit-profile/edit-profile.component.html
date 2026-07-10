@@ -5,41 +5,81 @@
   </div>
 
   <div class="ct_mt_50 bg-white ct_border_10 ct_box_shadow_25 ct_p_30 ct_576_p_20">
-    <form action="" (submit)="$event.preventDefault()">
+    <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()">
       <div class="d-flex align-items-center flex-wrap gap-4">
         <div class="ct_profile_img">
-          <img src="assets/img/user-f.jpg" alt="Fatima Ahmed" />
+          <img [src]="previewUrl || 'assets/img/user-f.jpg'" alt="Admin Profile" />
           <label for="ct_profile_update">
-            <input type="file" class="d-none" id="ct_profile_update" />
+            <input type="file" class="d-none" id="ct_profile_update" (change)="onFileSelected($event)" accept="image/*" />
             <div class="ct_upload_icon">
               <i class="fa-solid fa-camera"></i>
             </div>
           </label>
         </div>
         <div>
-          <h4 class="ct_fs_18 ct_fw_300 mb-0 text-break">Fatima Ahmed</h4>
-          <p class="ct_fs_14 mb-0 ct_text_para text-break">sarawilliam029&#64;gmail.com</p>
+          <h4 class="ct_fs_18 ct_fw_300 mb-0 text-break">{{ editProfileForm.get('name')?.value || 'Admin' }}</h4>
+          <p class="ct_fs_14 mb-0 ct_text_para text-break">{{ editProfileForm.get('email')?.value }}</p>
         </div>
       </div>
+      
       <div class="mt-5 row">
+        <!-- Full Name -->
         <div class="col-lg-6">
           <div class="form-group mb-3">
-            <label for="" class="ct_form_label">Full Name</label>
-            <input type="text" class="form-control ct_input ct_fs_14" placeholder="Enter Full Name" value="Fatima Ahmed" />
+            <label class="ct_form_label">Full Name</label>
+            <input type="text" formControlName="name" class="form-control ct_input ct_fs_14" placeholder="Enter Full Name" 
+              [class.is-invalid]="editProfileForm.get('name')?.touched && editProfileForm.get('name')?.invalid" />
+            <div *ngIf="editProfileForm.get('name')?.touched && editProfileForm.get('name')?.errors" class="invalid-feedback d-block mt-1">
+              <span *ngIf="editProfileForm.get('name')?.hasError('required')">Name is required.</span>
+            </div>
           </div>
         </div>
+
+        <!-- Phone Number -->
         <div class="col-lg-6">
           <div class="form-group mb-3">
-            <label for="" class="ct_form_label">Email Id <span class="text-grey">(non-editable)</span></label>
-            <input readonly type="email" class="form-control ct_input ct_fs_14" placeholder="Enter Email Address" value="ahmedkhan&#64;email.com" />
+            <label class="ct_form_label">Phone Number</label>
+            <input type="text" formControlName="phone" class="form-control ct_input ct_fs_14" placeholder="Enter Phone Number" 
+              [class.is-invalid]="editProfileForm.get('phone')?.touched && editProfileForm.get('phone')?.invalid" />
+            <div *ngIf="editProfileForm.get('phone')?.touched && editProfileForm.get('phone')?.errors" class="invalid-feedback d-block mt-1">
+              <span *ngIf="editProfileForm.get('phone')?.hasError('required')">Phone number is required.</span>
+              <span *ngIf="editProfileForm.get('phone')?.hasError('pattern')">Please enter a valid phone number.</span>
+            </div>
           </div>
         </div>
+
+        <!-- Email Id -->
+        <div class="col-lg-6">
+          <div class="form-group mb-3">
+            <label class="ct_form_label">Email Id <span class="text-grey">(non-editable)</span></label>
+            <input type="email" formControlName="email" class="form-control ct_input ct_fs_14" placeholder="Enter Email Address" />
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex ct_flex_col_575 gap-2 justify-content-end ct_mt_45">
+        <button type="button" routerLink="/dashboard" class="ct_transparent_btn ct_width_100_575" [disabled]="isLoading">Cancel</button>
+        <button type="submit" class="ct_gradient_btn ct_width_100_575" [disabled]="isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isLoading ? 'Saving...' : 'Save Changes' }}
+        </button>
       </div>
     </form>
-
-    <div class="d-flex ct_flex_col_575 gap-2 justify-content-end ct_mt_45">
-      <button routerLink="/dashboard" class="ct_transparent_btn ct_width_100_575">Cancel</button>
-      <button routerLink="/dashboard" class="ct_gradient_btn ct_width_100_575">Save Changes</button>
+  </div>
+  
+  <!-- Custom Toast Notification Overlay -->
+  <div *ngIf="showToastMessage" class="ct_toast_container">
+    <div class="ct_toast" 
+      [class.ct_toast_success]="toastType === 'success'"
+      [class.ct_toast_error]="toastType === 'error'"
+      [class.ct_toast_info]="toastType === 'info'">
+      <span class="ct_toast_icon">
+        <i class="fa-solid" 
+          [class.fa-circle-check]="toastType === 'success'"
+          [class.fa-circle-xmark]="toastType === 'error'"
+          [class.fa-circle-info]="toastType === 'info'"></i>
+      </span>
+      <p class="ct_toast_message">{{ toastMessage }}</p>
     </div>
   </div>
 </div>
