@@ -1,0 +1,182 @@
+<div class="ct_inner_header_bg mt-4 mb-5 ct_px_28">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <span class="spinner-border text-primary" role="status"></span>
+    <p class="mt-2 ct_text_para">Loading enrollment details...</p>
+  </div>
+
+  <!-- Error / Empty State -->
+  <div *ngIf="!isLoading && !parent" class="text-center py-5 bg-white ct_border_10">
+    <p class="mb-0 ct_text_para">Student enrollment application details not found.</p>
+    <a routerLink="/student-enrollment" class="btn btn-primary mt-3">Back to Enrollment List</a>
+  </div>
+
+  <!-- Content Block -->
+  <div *ngIf="!isLoading && parent">
+    <div class="d-flex justify-content-between gap-3 mb-4 ct_flex_col_575">
+      <h3 class="ct_fs_18 ct_fw_300 ct_text_primary mb-0">
+        <a routerLink="/student-enrollment" class="ct_text_primary me-2"><i class="fa-solid fa-chevron-left"></i></a>
+        Student Enrollment Details
+      </h3>
+      <div>
+        <span class="mb-0 ct_custom_badge text-uppercase"
+          [class.ct_pending_badge]="(parent.approvalStatus || parent.status)?.toLowerCase() === 'pending'"
+          [class.ct_approved_badge]="(parent.approvalStatus || parent.status)?.toLowerCase() === 'approved' || (parent.approvalStatus || parent.status)?.toLowerCase() === 'active'"
+          [class.ct_rejected_badge]="(parent.approvalStatus || parent.status)?.toLowerCase() === 'rejected'">
+          {{ ((parent.approvalStatus || parent.status)?.toLowerCase() === 'active' ? 'APPROVED' : (parent.approvalStatus || parent.status)) || 'pending' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="ct_mt_50 bg-white ct_border_10 ct_box_shadow_25 ct_p_30 ct_576_p_20">
+      <h3 class="ct_fw_300 ct_fs_18 ct_mb_16">Parent Information</h3>
+      <div class="ct_blue_box">
+        <div class="row">
+          <div class="col-xl-8">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div>
+                  <h6 class="ct_fs_14 ct_fw_400 ct_text_para mb-1">FIRST NAME</h6>
+                  <h5 class="ct_fs_16 ct_fw_300 mb-0 text-break">{{ parent.firstName || 'N/A' }}</h5>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div>
+                  <h6 class="ct_fs_14 ct_fw_400 ct_text_para mb-1">LAST NAME</h6>
+                  <h5 class="ct_fs_16 ct_fw_300 mb-0 text-break">{{ parent.lastName || 'N/A' }}</h5>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div>
+                  <h6 class="ct_fs_14 ct_fw_400 ct_text_para mb-1">EMAIL ADDRESS</h6>
+                  <h5 class="ct_fs_16 ct_fw_300 mb-0 text-break">{{ parent.email || 'N/A' }}</h5>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div>
+                  <h6 class="ct_fs_14 ct_fw_400 ct_text_para mb-1">PHONE NUMBER</h6>
+                  <h5 class="ct_fs_16 ct_fw_300 mb-0 text-break">{{ parent.phone || 'N/A' }}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-4">
+            <div class="ct_orange_box d-flex gap-4 ct_width_fit align-items-center">
+              <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="56" height="56" rx="16" fill="#FFEDD5"/>
+                <path d="M33.3337 40V37.3333C33.3337 34.3898 30.9439 32 28.0003 32H20.0003C17.0568 32 14.667 34.3898 14.667 37.3333V40" stroke="#FF5C00" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M33.333 16.1719C35.6853 16.7817 37.3279 18.9045 37.3279 21.3345C37.3279 23.7646 35.6853 25.8874 33.333 26.4972" stroke="#FF5C00" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M41.333 39.9985V37.3319C41.3312 34.9014 39.6863 32.7795 37.333 32.1719" stroke="#FF5C00" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18.667 21.3333C18.667 24.2769 21.0568 26.6667 24.0003 26.6667C26.9439 26.6667 29.3337 24.2769 29.3337 21.3333C29.3337 18.3898 26.9439 16 24.0003 16C21.0568 16 18.667 18.3898 18.667 21.3333V21.3333" stroke="#FF5C00" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <h6 class="ct_text_para ct_fs_16 ct_fw_300 mb-0">Total Children</h6>
+                <h5 class="ct_text_primary mb-0 ct_fs_36 ct_fw_300">
+                  {{ parent.studentSummary?.totalStudents ?? (parent.students ? parent.students.length : 0) }}
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <h3 class="ct_fw_300 ct_fs_18 ct_mb_16">Students Information</h3>
+        <div class="ct_blue_box">
+          <div class="row">
+            <!-- Loading No Students State -->
+            <div *ngIf="!parent.students || parent.students.length === 0" class="col-12 text-center py-4">
+              <p class="mb-0 ct_text_para">No students registered under this parent.</p>
+            </div>
+
+            <!-- Students Loop -->
+            <div *ngFor="let student of parent.students" class="col-xl-4 col-md-6 mb-3">
+              <div class="student_info_box">
+                <div class="student_name mb-3">
+                  {{ (student.firstName?.substring(0,1) || '') + (student.lastName?.substring(0,1) || '') | uppercase }}
+                </div>
+                <h3 class="ct_fs_16 ct_fw_300 mb-4">{{ student.fullName || (student.firstName + ' ' + student.lastName) }}</h3>
+                <div class="d-flex justify-content-between gap-2 flex-wrap">
+                  <h6 class="ct_fs_12 ct_fw_300 mb-0 opacity-75">DATE OF BIRTH</h6>
+                  <h5 class="ct_fs_14 ct_fw_300 mb-0">{{ (student.dob | date:'dd MMM yyyy') || 'N/A' }}</h5>
+                </div>
+                <div class="custom_divider my-3"></div>
+                <div class="d-flex justify-content-between gap-2 flex-wrap">
+                  <h6 class="ct_fs_12 ct_fw_300 mb-0 opacity-75">GRADE</h6>
+                  <h5 class="ct_fs_14 ct_fw_300 mb-0">{{ student.gradeLevel || 'N/A' }}</h5>
+                </div>
+                
+                <!-- Individual Student Approval Actions -->
+                <div class="d-flex justify-content-between gap-2 flex-wrap mt-3 align-items-center">
+                  <span class="mb-0 ct_custom_badge text-uppercase py-1 px-2"
+                    [class.ct_pending_badge]="(student.status || 'pending')?.toLowerCase() === 'pending'"
+                    [class.ct_approved_badge]="(student.status || 'pending')?.toLowerCase() === 'approved' || (student.status || 'pending')?.toLowerCase() === 'active'"
+                    [class.ct_rejected_badge]="(student.status || 'pending')?.toLowerCase() === 'rejected'"
+                    style="font-size: 11px; letter-spacing: 0.5px;">
+                    {{ (student.status?.toLowerCase() === 'active' ? 'APPROVED' : student.status) || 'pending' }}
+                  </span>
+                  
+                  <div class="d-flex gap-2" *ngIf="(student.status || 'pending')?.toLowerCase() === 'pending'">
+                    <button class="btn btn-sm btn-success px-2 py-1" (click)="updateStudentStatus(student.id, 'active')" title="Approve Student" style="font-size: 10px;">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger px-2 py-1" (click)="updateStudentStatus(student.id, 'rejected')" title="Reject Student" style="font-size: 10px;">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batch Actions -->
+      <div class="d-flex justify-content-end gap-3 ct_mt_45" *ngIf="(parent.approvalStatus || parent.status)?.toLowerCase() === 'pending'">
+        <button class="rejected-btn" (click)="rejectAll()">Reject All</button>
+        <button class="approved-btn" (click)="approveAll()">Approve All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Confirm Modal -->
+  <div *ngIf="showConfirmModal" class="ct_modal_overlay">
+    <div class="ct_modal_box">
+      <div class="ct_modal_icon_wrapper" 
+        [class.ct_modal_icon_approve]="confirmType === 'approve'"
+        [class.ct_modal_icon_reject]="confirmType === 'reject'"
+        [class.ct_modal_icon_confirm]="confirmType === 'confirm'">
+        <i class="fa-solid" 
+          [class.fa-check]="confirmType === 'approve'"
+          [class.fa-xmark]="confirmType === 'reject'"
+          [class.fa-question]="confirmType === 'confirm'"></i>
+      </div>
+      <h3 class="ct_modal_title">{{ confirmTitle }}</h3>
+      <p class="ct_modal_message">{{ confirmMessage }}</p>
+      <div class="ct_modal_actions">
+        <button class="ct_modal_btn ct_modal_btn_cancel" (click)="closeConfirmModal()">Cancel</button>
+        <button class="ct_modal_btn" 
+          [class.ct_modal_btn_approve]="confirmType === 'approve'"
+          [class.ct_modal_btn_reject]="confirmType === 'reject'"
+          [class.ct_modal_btn_confirm]="confirmType === 'confirm'"
+          (click)="onConfirm()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Toast Notification -->
+  <div *ngIf="showToastMessage" class="ct_toast_container">
+    <div class="ct_toast" 
+      [class.ct_toast_success]="toastType === 'success'"
+      [class.ct_toast_error]="toastType === 'error'"
+      [class.ct_toast_info]="toastType === 'info'">
+      <span class="ct_toast_icon">
+        <i class="fa-solid" 
+          [class.fa-circle-check]="toastType === 'success'"
+          [class.fa-circle-xmark]="toastType === 'error'"
+          [class.fa-circle-info]="toastType === 'info'"></i>
+      </span>
+      <p class="ct_toast_message">{{ toastMessage }}</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<div class="ct_inner_header_bg mt-4 mb-5 ct_px_28">
+  <div class="d-flex justify-content-between gap-3 mb-4 ct_flex_col_575">
+    <h3 class="ct_fs_18 ct_fw_300 ct_text_primary">
+      <a routerLink="/school-events" class="ct_text_primary"><i class="fa-solid fa-chevron-left"></i></a>
+      Edit School Event
+    </h3>
+    <div>
+      <span class="mb-0 ct_pending_badge ct_custom_badge">Pending</span>
+    </div>
+  </div>
+
+  <div class="ct_mt_50 bg-white ct_border_10 ct_box_shadow_25 ct_p_30 ct_576_p_20">
+    <form action="">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-group mb-4">
+            <label for="" class="ct_form_label">Event Title</label>
+            <div class="position-relative">
+              <input type="text" class="form-control ct_input ct_pe_40" placeholder="e.g., Annual Science Fair 2024" value="Mid-Term Examination Schedule" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="form-group mb-4">
+            <label for="" class="ct_form_label">Description</label>
+            <textarea rows="4" class="form-control ct_input">Initial consultation with new client about their requirements. Initial consultation with new client about their requirements.</textarea>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="form-group mb-4">
+            <label for="" class="ct_form_label">Event Date</label>
+            <div class="position-relative">
+              <input type="date" class="form-control ct_input ct_pe_40" value="2025-05-19" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="form-group mb-4">
+            <label for="" class="ct_form_label">Event Time</label>
+            <div class="position-relative">
+              <input type="time" class="form-control ct_input ct_pe_40" value="17:00" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="form-group mb-4">
+            <label for="" class="ct_form_label">Target Grade</label>
+            <select class="form-control ct_input" style="appearance: auto; -webkit-appearance: auto; -moz-appearance: auto;">
+              <option value="" disabled>Target Grade</option>
+              <option selected>A</option>
+              <option>B</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="d-flex ct_flex_col_575 gap-2 justify-content-end ct_mt_45">
+      <button routerLink="/school-events" class="ct_transparent_btn ct_width_100_575">Cancel</button>
+      <button routerLink="/school-events" class="ct_gradient_btn ct_width_100_575">Save Changes</button>
+    </div>
+  </div>
+</div>

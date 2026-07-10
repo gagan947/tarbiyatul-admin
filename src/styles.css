@@ -1,1 +1,196 @@
-/* You can add global styles to this file, and also import other style files */
+/* Custom Confirm Modal styling */
+.ct_modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(5px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ctFadeIn 0.25s ease-out;
+}
+
+.ct_modal_box {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 480px;
+  padding: 32px 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  animation: ctSlideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ct_modal_icon_wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.ct_modal_icon_approve {
+  background-color: #e6f7ef;
+  color: #00ae65;
+}
+
+.ct_modal_icon_reject {
+  background-color: #fdebee;
+  color: #cf0000;
+}
+
+.ct_modal_icon_confirm {
+  background-color: #ebf5ff;
+  color: #0267eb;
+}
+
+.ct_modal_title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.ct_modal_message {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #666666;
+  margin-bottom: 28px;
+  padding: 0 10px;
+}
+
+.ct_modal_actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.ct_modal_btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  min-width: 110px;
+}
+
+.ct_modal_btn_cancel {
+  background-color: #f2f2f2;
+  color: #4f4f4f;
+}
+
+.ct_modal_btn_cancel:hover {
+  background-color: #e5e5e5;
+}
+
+.ct_modal_btn_approve {
+  background-color: #00ae65;
+  color: #ffffff;
+}
+
+.ct_modal_btn_approve:hover {
+  background-color: #008d52;
+}
+
+.ct_modal_btn_reject {
+  background-color: #cf0000;
+  color: #ffffff;
+}
+
+.ct_modal_btn_reject:hover {
+  background-color: #aa0000;
+}
+
+.ct_modal_btn_confirm {
+  background-color: #0267eb;
+  color: #ffffff;
+}
+
+.ct_modal_btn_confirm:hover {
+  background-color: #0151ba;
+}
+
+/* Custom Toast Notification Styling */
+.ct_toast_container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ct_toast {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid #0267eb;
+  min-width: 300px;
+  max-width: 450px;
+  animation: ctSlideInRight 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ct_toast_success {
+  border-left-color: #00ae65;
+}
+
+.ct_toast_error {
+  border-left-color: #cf0000;
+}
+
+.ct_toast_info {
+  border-left-color: #0267eb;
+}
+
+.ct_toast_icon {
+  font-size: 18px;
+}
+
+.ct_toast_success .ct_toast_icon {
+  color: #00ae65;
+}
+
+.ct_toast_error .ct_toast_icon {
+  color: #cf0000;
+}
+
+.ct_toast_info .ct_toast_icon {
+  color: #0267eb;
+}
+
+.ct_toast_message {
+  font-size: 14px;
+  color: #333333;
+  font-weight: 500;
+  margin: 0;
+}
+
+@keyframes ctFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ctSlideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes ctSlideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}

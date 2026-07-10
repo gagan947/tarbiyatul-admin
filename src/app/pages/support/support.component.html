@@ -1,0 +1,176 @@
+<div class="ct_inner_header_bg mt-4 ct_px_28">
+  <div class="ct_main_head mb-4">
+    <h4 class="ct_fs_24 ct_fw_300 mb-1">Support</h4>
+    <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Review, track, and resolve support requests efficiently.</p>
+  </div>
+
+  <div class="messages-page-wrapper portal-font-main">
+    <!-- Chat Container -->
+    <div class="ct_chat_main_container position-relative">
+      
+      <!-- Chat Card -->
+      <div class="chat-main-card portal-card chatbox" [class.showbox]="isChatOpenOnMobile">
+        <!-- Chat Header -->
+        <div class="chat-header">
+          <div class="teacher-info-row">
+            <i class="fa-solid fa-angle-left d-block d-md-none chat-icon" (click)="closeChat()"></i>
+            <div class="teacher-avatar-container">
+              <img src="assets/img/user.jpg" alt="Ustadh Hamza" class="teacher-avatar-img" />
+            </div>
+            <div class="teacher-text-details">
+              <h3 class="teacher-display-name">Ustadh Hamza</h3>
+              <span class="teacher-display-role">Islamic Studies Teacher</span>
+              <div class="d-flex align-items-center">
+                <span class="online-indicator"></span>
+                <span class="teacher-status-text">Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat History -->
+        <div class="chat-history-window" id="chat-messages-container">
+          <div class="chat-date-separator">
+            <span class="date-label">Today</span>
+          </div>
+
+          <!-- Teacher Message -->
+          <div class="chat-bubble-wrapper teacher-sender">
+            <img src="assets/img/user-f.jpg" alt="Teacher Avatar" class="chat-avatar" />
+            <div class="message-bubble-block">
+              <div class="message-bubble">
+                <p class="message-text">
+                  Assalamualaikum Ali,<br />
+                  Please read pages 10–20 from the chapter "The Story of Prophet Yusuf (AS)" before Friday.
+                </p>
+              </div>
+              <div class="message-meta-info">
+                <span class="message-time">10:28 AM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Student Message -->
+          <div class="chat-bubble-wrapper student-sender">
+            <div class="message-bubble-block">
+              <div class="message-bubble">
+                <p class="message-text">
+                  Wa Alaikum Assalam Ustadh,<br />
+                  I will complete the reading before Friday, InshaAllah.
+                </p>
+              </div>
+              <div class="message-meta-info">
+                <span class="message-time">10:30 AM</span>
+                <span class="message-status-ticks">
+                  <i class="fa-solid fa-check double-tick"></i>
+                  <i class="fa-solid fa-check offset-tick"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Teacher Message -->
+          <div class="chat-bubble-wrapper teacher-sender">
+            <img src="assets/img/user-f.jpg" alt="Teacher Avatar" class="chat-avatar" />
+            <div class="message-bubble-block">
+              <div class="message-bubble">
+                <p class="message-text">
+                  Excellent. Also prepare the questions at the end of the chapter.
+                </p>
+              </div>
+              <div class="message-meta-info">
+                <span class="message-time">10:32 AM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <form class="chat-input-bar" (submit)="$event.preventDefault()">
+          <button type="button" class="attachment-btn" aria-label="Attach File">
+            <i class="fa-solid fa-paperclip"></i>
+          </button>
+          <input type="text" name="messageInput" placeholder="Type your message..." class="message-text-input" autocomplete="off" />
+          <button type="submit" class="send-message-btn" aria-label="Send Message">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="portal-profile-panel messages-sidebar-context chat-list" [class.hideList]="isChatOpenOnMobile">
+        <div class="ct_p_20">
+          <div class="messages-panel-header">
+            <h2 class="profile-title mb-0">Messages</h2>
+          </div>
+          <div class="search-convo-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" placeholder="Search conversations..." class="search-convo-input" />
+          </div>
+        </div>
+
+        <div class="threads-list-scrollable">
+          <!-- Thread 1 -->
+          <div class="thread-item-card active-thread" (click)="openChat()">
+            <div class="avatar-col">
+              <img src="assets/img/user.jpg" alt="Ustadh Hamza" class="thread-avatar-img" />
+              <span class="thread-online-dot"></span>
+            </div>
+            <div class="thread-info-col">
+              <div class="thread-name-row">
+                <h4 class="thread-teacher-name">Ustadh Hamza</h4>
+                <span class="thread-time">10:30 AM</span>
+              </div>
+              <span class="thread-subject">Teacher</span>
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <p class="thread-last-msg">Please complete page 20 and...</p>
+                <div class="thread-badge-col">
+                  <span class="unread-badge">2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thread 2 -->
+          <div class="thread-item-card" (click)="openChat()">
+            <div class="avatar-col">
+              <img src="assets/img/user-f.jpg" alt="UA" class="thread-avatar-img" />
+            </div>
+            <div class="thread-info-col">
+              <div class="thread-name-row">
+                <h4 class="thread-teacher-name">Ustadh Ahmed</h4>
+                <span class="thread-time">Yesterday</span>
+              </div>
+              <span class="thread-subject">Teacher</span>
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <p class="thread-last-msg">JazakAllah for submitting...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thread 3 -->
+          <div class="thread-item-card" (click)="openChat()">
+            <div class="avatar-col">
+              <img src="assets/img/user.jpg" alt="UA" class="thread-avatar-img" />
+              <span class="thread-online-dot"></span>
+            </div>
+            <div class="thread-info-col">
+              <div class="thread-name-row">
+                <h4 class="thread-teacher-name">Ustadha Aisha</h4>
+                <span class="thread-time">Mon</span>
+              </div>
+              <span class="thread-subject">Teacher</span>
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <p class="thread-last-msg">Your assignment looks good.</p>
+                <div class="thread-badge-col">
+                  <span class="unread-badge">1</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</div>

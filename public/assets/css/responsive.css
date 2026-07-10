@@ -1,0 +1,64 @@
+@media (max-width: 991px) {
+ 
+
+  .ct_side_bar {
+    left: -100%;
+    padding-top: 40px;
+  }
+
+  .ct_show .ct_side_bar {
+    left: 0px;
+    z-index: 99;
+  }
+
+  .ct_close_sidebar {
+    position: absolute;
+    display: block;
+    right: 15px;
+    top: 15px;
+    font-size: 22px;
+    transition: 0.4s ease all;
+    /* color: #fff; */
+  }
+
+  .ct_close_sidebar:hover {
+    transform: rotate(360deg);
+  }
+
+  .ct_right_panel {
+    margin-left: 0px;
+    width: 100%;
+  }
+
+  .ct_menu_bar {
+    display: block;
+  }
+}
+@media(max-width:767px){
+  .ct_blue_box{
+    padding: 20px;
+  }
+  .student_info_box{
+    padding: 10px;
+  }
+    .ct_flex_col_767{
+            flex-direction: column;
+            align-items: start !important;
+      }
+}
+
+@media(max-width:575px){
+  .notification_menu{
+    width: 350px;
+  }
+     .ct_flex_col_575{
+            flex-direction: column;
+            align-items: start !important;
+      }
+      .ct_width_100_575{
+        width: 100%;
+      }
+      .ct_w_100_575{
+        width: 100%;
+      }
+}
