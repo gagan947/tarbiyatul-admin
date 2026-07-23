@@ -37,6 +37,7 @@ export const routes: Routes = [
       { path: 'school-events', component: SchoolEventsComponent },
       { path: 'create-school-event', component: CreateSchoolEventComponent },
       { path: 'edit-school-event', component: EditSchoolEventComponent },
+      { path: 'edit-school-event/:id', component: EditSchoolEventComponent },
       { path: 'support', component: SupportComponent },
       { path: 'edit-profile', component: EditProfileComponent },
       { path: 'change-password', component: ChangePasswordComponent }

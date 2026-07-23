@@ -4,64 +4,116 @@
       <a routerLink="/school-events" class="ct_text_primary"><i class="fa-solid fa-chevron-left"></i></a>
       Create School Event
     </h3>
-    <div>
-      <span class="mb-0 ct_pending_badge ct_custom_badge">Pending</span>
-    </div>
   </div>
 
   <div class="ct_mt_50 bg-white ct_border_10 ct_box_shadow_25 ct_p_30 ct_576_p_20">
-    <form action="">
+    <div *ngIf="errorMessage" class="alert alert-danger mb-4">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="alert alert-success mb-4">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-lg-12">
           <div class="form-group mb-4">
-            <label for="" class="ct_form_label">Event Title</label>
+            <label class="ct_form_label">Event Title <span class="text-danger">*</span></label>
             <div class="position-relative">
-              <input type="text" class="form-control ct_input ct_pe_40" placeholder="e.g., Annual Science Fair 2024" />
+              <input type="text" formControlName="title" class="form-control ct_input ct_pe_40"
+                placeholder="e.g., Annual Science Fair 2024" />
+            </div>
+            <div *ngIf="eventForm.get('title')?.touched && eventForm.get('title')?.errors?.['required']"
+              class="text-danger mt-1 small">
+              Title is required.
             </div>
           </div>
         </div>
 
         <div class="col-lg-12">
           <div class="form-group mb-4">
-            <label for="" class="ct_form_label">Description</label>
-            <textarea rows="4" class="form-control ct_input" placeholder="Provide detailed information about the event..."></textarea>
-          </div>
-        </div>
-
-        <div class="col-lg-4">
-          <div class="form-group mb-4">
-            <label for="" class="ct_form_label">Event Date</label>
-            <div class="position-relative">
-              <input type="date" class="form-control ct_input ct_pe_40" />
+            <label class="ct_form_label">Description <span class="text-danger">*</span></label>
+            <textarea rows="4" formControlName="description" class="form-control ct_input"
+              placeholder="Provide detailed information about the event..."></textarea>
+            <div *ngIf="eventForm.get('description')?.touched && eventForm.get('description')?.errors?.['required']"
+              class="text-danger mt-1 small">
+              Description is required.
             </div>
           </div>
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-6">
           <div class="form-group mb-4">
-            <label for="" class="ct_form_label">Event Time</label>
+            <label class="ct_form_label">Event Date <span class="text-danger">*</span></label>
             <div class="position-relative">
-              <input type="time" class="form-control ct_input ct_pe_40" />
+              <input type="date" formControlName="eventDate" class="form-control ct_input" />
+            </div>
+            <div *ngIf="eventForm.get('eventDate')?.touched && eventForm.get('eventDate')?.errors?.['required']"
+              class="text-danger mt-1 small">
+              Event date is required.
             </div>
           </div>
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-lg-6">
           <div class="form-group mb-4">
-            <label for="" class="ct_form_label">Target Grade</label>
-            <select class="form-control ct_input" style="appearance: auto; -webkit-appearance: auto; -moz-appearance: auto;">
-              <option value="" selected disabled>Target Grade</option>
-              <option>A</option>
-              <option>B</option>
-            </select>
+            <label class="ct_form_label">Event Time <span class="text-danger">*</span></label>
+            <div class="position-relative">
+              <input type="time" formControlName="eventTime" class="form-control ct_input" />
+            </div>
+            <div *ngIf="eventForm.get('eventTime')?.touched && eventForm.get('eventTime')?.errors?.['required']"
+              class="text-danger mt-1 small">
+              Event time is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories Selection -->
+        <div class="col-lg-12">
+          <div class="form-group mb-4">
+            <label class="ct_form_label">Categories <span class="text-danger">*</span></label>
+            <div class="d-flex flex-wrap gap-2 mt-1">
+              <button type="button" *ngFor="let cat of categoryOptions" (click)="toggleCategory(cat)" class="btn btn-sm"
+                [ngClass]="isCategorySelected(cat) ? 'btn-primary' : 'btn-outline-secondary'">
+                {{ cat }}
+                <i class="ms-1" [ngClass]="isCategorySelected(cat) ? 'fa-solid fa-check' : 'fa-solid fa-plus'"></i>
+              </button>
+            </div>
+            <div *ngIf="eventForm.get('categories')?.touched && eventForm.get('categories')?.errors?.['required']"
+              class="text-danger mt-1 small">
+              At least one category is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Grades Selection -->
+        <div class="col-lg-12">
+          <div class="form-group mb-4">
+            <label class="ct_form_label">Target Grades <span class="text-danger">*</span></label>
+            <div class="d-flex flex-wrap gap-2 mt-1">
+              <button type="button" *ngFor="let grade of gradeOptions" (click)="toggleGrade(grade)" class="btn btn-sm"
+                [ngClass]="isGradeSelected(grade) ? 'btn-primary' : 'btn-outline-secondary'">
+                {{ grade }}
+                <i class="ms-1" [ngClass]="isGradeSelected(grade) ? 'fa-solid fa-check' : 'fa-solid fa-plus'"></i>
+              </button>
+            </div>
+            <div *ngIf="eventForm.get('grades')?.touched && eventForm.get('grades')?.errors?.['required']"
+              class="text-danger mt-1 small">
+              At least one grade is required.
+            </div>
           </div>
         </div>
       </div>
-    </form>
 
-    <div class="d-flex ct_flex_col_575 gap-2 justify-content-end ct_mt_45">
-      <button routerLink="/school-events" class="ct_transparent_btn ct_width_100_575">Cancel</button>
-      <button routerLink="/school-events" class="ct_gradient_btn ct_width_100_575">Publish Event</button>
-    </div>
+      <div class="d-flex ct_flex_col_575 gap-2 justify-content-end ct_mt_45">
+        <a routerLink="/school-events"
+          class="ct_transparent_btn ct_width_100_575 text-center text-decoration-none">Cancel</a>
+        <button type="submit" [disabled]="isLoading"
+          class="ct_gradient_btn ct_width_100_575 d-flex align-items-center justify-content-center">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Publish Event
+        </button>
+      </div>
+    </form>
   </div>
 </div>
