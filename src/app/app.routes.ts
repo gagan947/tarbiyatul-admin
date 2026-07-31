@@ -16,6 +16,7 @@ import { SupportComponent } from './pages/support/support.component';
 import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 import { authGuard } from './guards/auth.guard';
+import { HandbooksComponent } from './pages/handbooks/handbooks.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -38,6 +39,7 @@ export const routes: Routes = [
       { path: 'create-school-event', component: CreateSchoolEventComponent },
       { path: 'edit-school-event', component: EditSchoolEventComponent },
       { path: 'edit-school-event/:id', component: EditSchoolEventComponent },
+      { path: 'handbooks', component: HandbooksComponent },
       { path: 'support', component: SupportComponent },
       { path: 'edit-profile', component: EditProfileComponent },
       { path: 'change-password', component: ChangePasswordComponent }
