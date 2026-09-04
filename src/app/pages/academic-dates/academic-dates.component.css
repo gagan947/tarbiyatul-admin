@@ -1,0 +1,17 @@
+.ct_dashbaord_middle {
+  padding: 30px;
+}
+
+.date-row {
+  transition: background-color 0.15s ease;
+}
+
+.date-row:hover {
+  background-color: #FDFBF8;
+  border-radius: 8px;
+}
+
+.form-control:focus {
+  border-color: #FC800A !important;
+  box-shadow: 0 0 0 0.2rem rgba(252, 128, 10, 0.12);
+}

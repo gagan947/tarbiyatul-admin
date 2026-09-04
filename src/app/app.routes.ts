@@ -18,6 +18,11 @@ import { ChangePasswordComponent } from './pages/change-password/change-password
 import { authGuard } from './guards/auth.guard';
 import { HandbooksComponent } from './pages/handbooks/handbooks.component';
 
+import { AcademicDatesComponent } from './pages/academic-dates/academic-dates.component';
+import { FormsManagementComponent } from './pages/forms-management/forms-management.component';
+import { TutoringEnrollmentComponent } from './pages/tutoring-enrollment/tutoring-enrollment.component';
+import { TutoringEnrollmentDetailComponent } from './pages/tutoring-enrollment-detail/tutoring-enrollment-detail.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
@@ -33,12 +38,16 @@ export const routes: Routes = [
       { path: 'student-enrollment-detail', component: StudentEnrollmentDetailComponent },
       { path: 'teacher-enrollment', component: TeacherEnrollmentComponent },
       { path: 'teacher-enrollment-detail', component: TeacherEnrollmentDetailComponent },
+      { path: 'tutoring-enrollment', component: TutoringEnrollmentComponent },
+      { path: 'tutoring-enrollment-detail', component: TutoringEnrollmentDetailComponent },
       { path: 'fee-payment', component: FeePaymentComponent },
       { path: 'announcements', component: AnnouncementsComponent },
       { path: 'school-events', component: SchoolEventsComponent },
       { path: 'create-school-event', component: CreateSchoolEventComponent },
       { path: 'edit-school-event', component: EditSchoolEventComponent },
       { path: 'edit-school-event/:id', component: EditSchoolEventComponent },
+      { path: 'academic-dates', component: AcademicDatesComponent },
+      { path: 'forms-management', component: FormsManagementComponent },
       { path: 'handbooks', component: HandbooksComponent },
       { path: 'support', component: SupportComponent },
       { path: 'edit-profile', component: EditProfileComponent },

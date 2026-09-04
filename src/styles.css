@@ -206,6 +206,36 @@
   line-height: 1.1;
 }
 
+/* Gradient Button Style */
+.ct_gradient_btn {
+  background: linear-gradient(135deg, #FC800A 0%, #E66C00 100%) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  border: none !important;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(252, 128, 10, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none !important;
+}
+
+.ct_gradient_btn:hover {
+  background: linear-gradient(135deg, #e57308 0%, #cf6100 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(252, 128, 10, 0.35);
+  transform: translateY(-1px);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.ct_fs_11 {
+  font-size: 12px;
+}
+
 @keyframes ctFadeIn {
   from {
     opacity: 0;

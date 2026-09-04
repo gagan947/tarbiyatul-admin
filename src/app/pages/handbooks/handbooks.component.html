@@ -90,39 +90,50 @@
         <div class="modal-body ct_px_32 ct_pb_32">
           <div class="form-group mb-4">
             <label class="ct_form_label">Title <span class="text-danger">*</span></label>
-            <input class="form-control ct_input" placeholder="e.g., Science Handbook 2026" [(ngModel)]="newTitle" />
+            <input class="form-control ct_input" placeholder="e.g., Science Handbook 2026"
+              [(ngModel)]="newTitle"
+              [style.border-color]="titleError ? '#dc3545' : ''"
+              (ngModelChange)="titleError = ''"/>
+            <div *ngIf="titleError" class="d-flex align-items-center gap-1 mt-1">
+              <i class="fa-solid fa-circle-exclamation" style="color:#dc3545;font-size:12px;"></i>
+              <small style="color:#dc3545;font-size:12px;">{{ titleError }}</small>
+            </div>
           </div>
           <div class="form-group mb-4">
             <label class="ct_form_label">Grade Level <span class="text-danger">*</span></label>
-            <select class="form-control ct_input" [(ngModel)]="newGradeLevel">
+            <select class="form-control ct_input" [(ngModel)]="newGradeLevel"
+              [style.border-color]="gradeLevelError ? '#dc3545' : ''"
+              (ngModelChange)="gradeLevelError = ''">
               <option value="" disabled selected>Select Grade Level</option>
               <option *ngFor="let grade of gradeLevels" [value]="grade">{{ grade }}</option>
             </select>
+            <div *ngIf="gradeLevelError" class="d-flex align-items-center gap-1 mt-1">
+              <i class="fa-solid fa-circle-exclamation" style="color:#dc3545;font-size:12px;"></i>
+              <small style="color:#dc3545;font-size:12px;">{{ gradeLevelError }}</small>
+            </div>
           </div>
           <div class="form-group mb-4">
             <label class="ct_form_label">Upload Document <span class="text-danger">*</span></label>
-            <div class="ct_file_upload_box mt-2 position-relative">
-              <input type="file" class="position-absolute w-100 h-100 opacity-0" style="cursor: pointer; z-index: 2;"
-                (change)="onFileSelected($event)" accept=".pdf" />
+            <div class="ct_file_upload_box mt-2 position-relative"
+              [style.border-color]="fileError ? '#dc3545' : ''">
+              <input type="file" class="position-absolute w-100 h-100 opacity-0" style="cursor:pointer;z-index:2;"
+                (change)="onFileSelected($event); fileError = ''" accept=".pdf" />
               <div class="d-flex flex-column align-items-center justify-content-center p-4"
-                style="border: 1px dashed #d1d5db; border-radius: 8px; background-color: #f9fafb;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                  class="mb-2">
-                  <path d="M12 16L12 8" stroke="#FC800A" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                  <path d="M9 11L12 8L15 11" stroke="#FC800A" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
+                style="border:1px dashed #d1d5db;border-radius:8px;background-color:#f9fafb;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-2">
+                  <path d="M12 16L12 8" stroke="#FC800A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M9 11L12 8L15 11" stroke="#FC800A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                   <path d="M8 16H16" stroke="#FC800A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  <path
-                    d="M3 16.5C3 18.9853 5.01472 21 7.5 21H16.5C18.9853 21 21 18.9853 21 16.5C21 14.3986 19.5593 12.6331 17.6256 12.1558C17.3871 8.76189 14.5427 6 11 6C7.94056 6 5.37255 8.10915 4.67389 10.9765C3.72266 11.2335 3 12.1158 3 13.15V16.5Z"
-                    stroke="#FC800A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M3 16.5C3 18.9853 5.01472 21 7.5 21H16.5C18.9853 21 21 18.9853 21 16.5C21 14.3986 19.5593 12.6331 17.6256 12.1558C17.3871 8.76189 14.5427 6 11 6C7.94056 6 5.37255 8.10915 4.67389 10.9765C3.72266 11.2335 3 12.1158 3 13.15V16.5Z" stroke="#FC800A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <p class="ct_fs_16 ct_fw_400 ct_text_para mb-1">Drag and drop or <span
-                    style="color: #FC800A; font-weight: 500;">click to upload PDF here</span></p>
+                <p class="ct_fs_16 ct_fw_400 ct_text_para mb-1">Drag and drop or <span style="color:#FC800A;font-weight:500;">click to upload PDF here</span></p>
                 <p class="ct_fs_14 ct_fw_400 text-muted mb-0" *ngIf="!selectedFile">Supports: PDF</p>
-                <p class="ct_fs_14 ct_fw_500 mb-0" style="color: #FC800A;" *ngIf="selectedFile">{{ selectedFile.name }}
-                </p>
+                <p class="ct_fs_14 ct_fw_500 mb-0" style="color:#FC800A;" *ngIf="selectedFile">{{ selectedFile.name }}</p>
               </div>
+            </div>
+            <div *ngIf="fileError" class="d-flex align-items-center gap-1 mt-1">
+              <i class="fa-solid fa-circle-exclamation" style="color:#dc3545;font-size:12px;"></i>
+              <small style="color:#dc3545;font-size:12px;">{{ fileError }}</small>
             </div>
           </div>
           <div class="d-flex ct_flex_col_575 gap-3 mt-4">

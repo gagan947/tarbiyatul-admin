@@ -1,176 +1,427 @@
-<div class="ct_inner_header_bg mt-4 ct_px_28">
-  <div class="ct_main_head mb-4">
-    <h4 class="ct_fs_24 ct_fw_300 mb-1">Support</h4>
-    <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Review, track, and resolve support requests efficiently.</p>
+<div class="ct_inner_header_bg mt-4 mb-5 ct_px_28">
+
+  <!-- Toast Notification -->
+  <div *ngIf="showToast" class="position-fixed d-flex align-items-center gap-3 px-4 py-3 shadow-lg bg-white"
+    style="top:24px; right:24px; z-index:99999; border-radius:14px; min-width:320px; border-left:5px solid;"
+    [style.border-left-color]="toastType==='success'?'#00B536':toastType==='error'?'#F13E3E':'#0267EB'">
+    <i class="fa-solid fa-circle-check fs-5"
+      [style.color]="toastType==='success'?'#00B536':toastType==='error'?'#F13E3E':'#0267EB'"></i>
+    <span class="fw-semibold ct_fs_14 text-dark">{{ toastMessage }}</span>
   </div>
 
-  <div class="messages-page-wrapper portal-font-main">
-    <!-- Chat Container -->
-    <div class="ct_chat_main_container position-relative">
-      
-      <!-- Chat Card -->
-      <div class="chat-main-card portal-card chatbox" [class.showbox]="isChatOpenOnMobile">
-        <!-- Chat Header -->
-        <div class="chat-header">
-          <div class="teacher-info-row">
-            <i class="fa-solid fa-angle-left d-block d-md-none chat-icon" (click)="closeChat()"></i>
-            <div class="teacher-avatar-container">
-              <img src="assets/img/user.jpg" alt="Ustadh Hamza" class="teacher-avatar-img" />
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h4 class="ct_fs_24 ct_fw_700 mb-1 text-dark">Support &amp; Helpdesk</h4>
+      <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Review, track, and resolve support tickets and user inquiries
+        across all portals.</p>
+    </div>
+  </div>
+
+  <!-- Top KPI Stats Row -->
+  <div class="row g-3 mb-4">
+    <!-- Total Tickets -->
+    <div class="col-xl-2 col-md-4 col-6">
+      <div class="p-3 position-relative overflow-hidden h-100 text-white"
+        style="background: linear-gradient(135deg, #0267EB 0%, #0251C4 100%); border-radius: 16px; box-shadow: 0 4px 16px rgba(2, 103, 235, 0.2);">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <span class="ct_fs_11 fw-bold text-uppercase" style="letter-spacing: .5px; opacity: .85;">TOTAL TICKETS</span>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 28px; height: 28px; background: rgba(255, 255, 255, 0.2);">
+            <i class="fa-solid fa-headset ct_fs_12"></i>
+          </div>
+        </div>
+        <h3 class="ct_fs_24 ct_fw_700 mb-0">{{ stats.total_tickets }}</h3>
+      </div>
+    </div>
+
+    <!-- Open -->
+    <div class="col-xl-2 col-md-4 col-6">
+      <div class="p-3 position-relative overflow-hidden h-100"
+        style="background: #FFFBF5; border: 1.5px solid #FDE68A; border-radius: 16px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08);">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <span class="ct_fs_11 fw-bold text-uppercase" style="letter-spacing: .5px; color: #92400E;">OPEN</span>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 28px; height: 28px; background: #FEF3C7;">
+            <i class="fa-solid fa-envelope-open-text ct_fs_12 text-warning"></i>
+          </div>
+        </div>
+        <h3 class="ct_fs_24 ct_fw_700 mb-0" style="color: #D97706;">{{ stats.open_tickets }}</h3>
+      </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="col-xl-2 col-md-4 col-6">
+      <div class="p-3 position-relative overflow-hidden h-100"
+        style="background: #F0F9FF; border: 1.5px solid #BAE6FD; border-radius: 16px; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <span class="ct_fs_11 fw-bold text-uppercase" style="letter-spacing: .5px; color: #075985;">IN PROGRESS</span>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 28px; height: 28px; background: #E0F2FE;">
+            <i class="fa-solid fa-spinner ct_fs_12 text-info"></i>
+          </div>
+        </div>
+        <h3 class="ct_fs_24 ct_fw_700 mb-0" style="color: #0284C7;">{{ stats.in_progress_tickets }}</h3>
+      </div>
+    </div>
+
+    <!-- Resolved -->
+    <div class="col-xl-2 col-md-4 col-6">
+      <div class="p-3 position-relative overflow-hidden h-100"
+        style="background: #F0FDF4; border: 1.5px solid #BBF7D0; border-radius: 16px; box-shadow: 0 2px 8px rgba(22, 163, 74, 0.08);">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <span class="ct_fs_11 fw-bold text-uppercase" style="letter-spacing: .5px; color: #166534;">RESOLVED</span>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 28px; height: 28px; background: #DCFCE7;">
+            <i class="fa-solid fa-circle-check ct_fs_12 text-success"></i>
+          </div>
+        </div>
+        <h3 class="ct_fs_24 ct_fw_700 mb-0" style="color: #16A34A;">{{ stats.resolved_tickets }}</h3>
+      </div>
+    </div>
+
+    <!-- Closed -->
+    <div class="col-xl-2 col-md-4 col-6">
+      <div class="p-3 position-relative overflow-hidden h-100"
+        style="background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: 16px; box-shadow: 0 2px 8px rgba(100, 116, 139, 0.08);">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <span class="ct_fs_11 fw-bold text-uppercase" style="letter-spacing: .5px; color: #475569;">CLOSED</span>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 28px; height: 28px; background: #F1F5F9;">
+            <i class="fa-solid fa-circle-xmark ct_fs_12 text-secondary"></i>
+          </div>
+        </div>
+        <h3 class="ct_fs_24 ct_fw_700 mb-0" style="color: #64748B;">{{ stats.closed_tickets }}</h3>
+      </div>
+    </div>
+
+    <!-- Unread -->
+    <div class="col-xl-2 col-md-4 col-6">
+      <div class="p-3 position-relative overflow-hidden h-100"
+        style="background: #FEF2F2; border: 1.5px solid #FECDD3; border-radius: 16px; box-shadow: 0 2px 8px rgba(225, 29, 72, 0.08);">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <span class="ct_fs_11 fw-bold text-uppercase" style="letter-spacing: .5px; color: #9F1239;">UNREAD</span>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 28px; height: 28px; background: #FFE4E6;">
+            <i class="fa-solid fa-bell ct_fs_12 text-danger"></i>
+          </div>
+        </div>
+        <h3 class="ct_fs_24 ct_fw_700 mb-0" style="color: #E11D48;">{{ stats.unread_tickets }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Support Layout Card -->
+  <div class="bg-white shadow-sm overflow-hidden"
+    style="border-radius: 20px; border: 1px solid #F0EDE8; min-height: 680px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+    <div class="row g-0" style="min-height: 680px;">
+
+      <!-- Left Panel: Ticket Queue -->
+      <div class="col-lg-4 col-xl-4 border-end" style="border-color: #F0EDE8 !important;"
+        [class.d-none]="isChatOpenOnMobile" [class.d-lg-block]="isChatOpenOnMobile">
+
+        <!-- Search and Filters Area -->
+        <div class="p-3 border-bottom" style="background: #FAFAFA; border-color: #F0EDE8 !important;">
+          <!-- Search Box -->
+          <div class="position-relative mb-2">
+            <input type="text" class="form-control ps-5 ct_fs_13"
+              style="height: 42px; border-radius: 10px; border: 1.5px solid #EAEAEA; background: #FFFFFF;"
+              placeholder="Search ticket #, sender, subject..." [(ngModel)]="searchQuery"
+              (ngModelChange)="onSearchChange($event)">
+            <i
+              class="fa-solid fa-magnifying-glass position-absolute top-50 start-0 translate-middle-y ms-3 text-muted ct_fs_13"></i>
+          </div>
+
+          <!-- Filters Row -->
+          <div class="row g-2">
+            <div class="col-4">
+              <select class="form-select ct_fs_12 fw-semibold px-2 py-1"
+                style="height: 36px; border-radius: 8px; border: 1.5px solid #EAEAEA; background: #FFFFFF;"
+                [(ngModel)]="selectedRole" (ngModelChange)="onFilterChange()">
+                <option value="all">All Roles</option>
+                <option value="parent">Parent</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="tutoring">Tutoring</option>
+              </select>
             </div>
-            <div class="teacher-text-details">
-              <h3 class="teacher-display-name">Ustadh Hamza</h3>
-              <span class="teacher-display-role">Islamic Studies Teacher</span>
-              <div class="d-flex align-items-center">
-                <span class="online-indicator"></span>
-                <span class="teacher-status-text">Online</span>
-              </div>
+            <div class="col-4">
+              <select class="form-select ct_fs_12 fw-semibold px-2 py-1"
+                style="height: 36px; border-radius: 8px; border: 1.5px solid #EAEAEA; background: #FFFFFF;"
+                [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()">
+                <option value="all">All Status</option>
+                <option value="open">Open</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <select class="form-select ct_fs_12 fw-semibold px-2 py-1"
+                style="height: 36px; border-radius: 8px; border: 1.5px solid #EAEAEA; background: #FFFFFF;"
+                [(ngModel)]="selectedPriority" (ngModelChange)="onFilterChange()">
+                <option value="all">All Priority</option>
+                <option value="high">Urgent/High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
             </div>
           </div>
         </div>
 
-        <!-- Chat History -->
-        <div class="chat-history-window" id="chat-messages-container">
-          <div class="chat-date-separator">
-            <span class="date-label">Today</span>
+        <!-- Ticket List Container -->
+        <div class="p-2 overflow-auto" style="max-height: 560px;">
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border spinner-border-sm" role="status" style="color:#FC800A;"></div>
+            <p class="mt-2 ct_fs_13 text-muted">Loading tickets...</p>
           </div>
 
-          <!-- Teacher Message -->
-          <div class="chat-bubble-wrapper teacher-sender">
-            <img src="assets/img/user-f.jpg" alt="Teacher Avatar" class="chat-avatar" />
-            <div class="message-bubble-block">
-              <div class="message-bubble">
-                <p class="message-text">
-                  Assalamualaikum Ali,<br />
-                  Please read pages 10–20 from the chapter "The Story of Prophet Yusuf (AS)" before Friday.
-                </p>
-              </div>
-              <div class="message-meta-info">
-                <span class="message-time">10:28 AM</span>
-              </div>
-            </div>
+          <!-- Empty State -->
+          <div *ngIf="!isLoading && tickets.length === 0" class="text-center py-5 px-3 text-muted">
+            <div style="font-size: 38px; opacity: .4;">📥</div>
+            <h6 class="ct_fs_15 fw-bold text-dark mt-2 mb-1">No Tickets Found</h6>
+            <p class="ct_fs_12 text-muted mb-0">No support inquiries match your current search or filters.</p>
           </div>
 
-          <!-- Student Message -->
-          <div class="chat-bubble-wrapper student-sender">
-            <div class="message-bubble-block">
-              <div class="message-bubble">
-                <p class="message-text">
-                  Wa Alaikum Assalam Ustadh,<br />
-                  I will complete the reading before Friday, InshaAllah.
-                </p>
-              </div>
-              <div class="message-meta-info">
-                <span class="message-time">10:30 AM</span>
-                <span class="message-status-ticks">
-                  <i class="fa-solid fa-check double-tick"></i>
-                  <i class="fa-solid fa-check offset-tick"></i>
+          <!-- Ticket Cards -->
+          <div *ngFor="let t of tickets" class="p-3 mb-2 rounded-3 cursor-pointer position-relative transition-all"
+            [style.background]="selectedTicket?.id === t.id ? 'linear-gradient(135deg, #FFF9F3 0%, #FFF3E6 100%)' : '#FFFFFF'"
+            [style.border]="selectedTicket?.id === t.id ? '1.5px solid #FC800A' : '1px solid #F0EDE8'"
+            [style.box-shadow]="selectedTicket?.id === t.id ? '0 4px 14px rgba(252, 128, 10, 0.15)' : 'none'"
+            (click)="selectTicket(t)">
+
+            <!-- Top Row: ID Badge + Role Badge -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge px-2 py-1 font-monospace ct_fs_11 fw-bold"
+                  style="background:#1E293B; color:#F8FAFC; border-radius: 6px;">
+                  {{ t.ticket_number }}
+                </span>
+
+                <!-- Role Tag -->
+                <span class="badge px-2 py-1 text-uppercase ct_fs_10 fw-bold" style="border-radius: 6px;"
+                  [style.background]="t.user_role === 'parent' ? '#EEF2FF' : (t.user_role === 'teacher' ? '#ECFDF5' : (t.user_role === 'student' ? '#E0F2FE' : '#FEF3C7'))"
+                  [style.color]="t.user_role === 'parent' ? '#4F46E5' : (t.user_role === 'teacher' ? '#059669' : (t.user_role === 'student' ? '#0284C7' : '#D97706'))">
+                  {{ t.user_role }}
                 </span>
               </div>
-            </div>
-          </div>
 
-          <!-- Teacher Message -->
-          <div class="chat-bubble-wrapper teacher-sender">
-            <img src="assets/img/user-f.jpg" alt="Teacher Avatar" class="chat-avatar" />
-            <div class="message-bubble-block">
-              <div class="message-bubble">
-                <p class="message-text">
-                  Excellent. Also prepare the questions at the end of the chapter.
-                </p>
-              </div>
-              <div class="message-meta-info">
-                <span class="message-time">10:32 AM</span>
-              </div>
+              <!-- Unread indicator -->
+              <span *ngIf="t.is_unread" class="badge rounded-pill bg-danger px-2 py-1 ct_fs_10">
+                NEW
+              </span>
+            </div>
+
+            <!-- Subject -->
+            <h6 class="fw-bold text-dark ct_fs_14 mb-1 text-truncate" style="line-height: 1.3;">
+              {{ t.subject }}
+            </h6>
+
+            <!-- Sender info -->
+            <div class="d-flex align-items-center justify-content-between gap-2 ct_fs_12 text-muted mb-2">
+              <span class="text-truncate"><i class="fa-solid fa-user me-1" style="color: #9CA3AF;"></i>{{ t.sender_name
+                }}</span>
+              <span *ngIf="t.student_grade" class="badge bg-light text-dark border ct_fs_10 px-2 py-1"
+                style="border-radius: 6px;">
+                {{ t.student_grade }}
+              </span>
+            </div>
+
+            <!-- Bottom Row: Priority & Status -->
+            <div class="d-flex align-items-center justify-content-between pt-1 border-top"
+              style="border-color: rgba(0,0,0,0.05) !important;">
+              <!-- Priority -->
+              <span class="ct_fs_11 fw-bold text-uppercase d-inline-flex align-items-center gap-1"
+                [style.color]="(t.priority === 'high' || t.priority === 'urgent') ? '#DC2626' : (t.priority === 'medium' ? '#D97706' : '#64748B')">
+                <i class="fa-solid fa-flag" style="font-size: 10px;"></i>
+                {{ t.priority }}
+              </span>
+
+              <!-- Status Badge -->
+              <span class="badge px-3 py-1 text-uppercase ct_fs_11 fw-bold" style="border-radius: 8px;"
+                [style.background]="t.status === 'open' ? '#FEF3C7' : (t.status === 'in_progress' ? '#E0F2FE' : (t.status === 'resolved' ? '#DCFCE7' : '#F1F5F9'))"
+                [style.color]="t.status === 'open' ? '#B45309' : (t.status === 'in_progress' ? '#0369A1' : (t.status === 'resolved' ? '#15803D' : '#475569'))">
+                {{ t.status.replace('_', ' ') }}
+              </span>
             </div>
           </div>
         </div>
-
-        <!-- Chat Input -->
-        <form class="chat-input-bar" (submit)="$event.preventDefault()">
-          <button type="button" class="attachment-btn" aria-label="Attach File">
-            <i class="fa-solid fa-paperclip"></i>
-          </button>
-          <input type="text" name="messageInput" placeholder="Type your message..." class="message-text-input" autocomplete="off" />
-          <button type="submit" class="send-message-btn" aria-label="Send Message">
-            <i class="fa-solid fa-paper-plane"></i>
-          </button>
-        </form>
       </div>
 
-      <!-- Sidebar -->
-      <aside class="portal-profile-panel messages-sidebar-context chat-list" [class.hideList]="isChatOpenOnMobile">
-        <div class="ct_p_20">
-          <div class="messages-panel-header">
-            <h2 class="profile-title mb-0">Messages</h2>
+      <!-- Right Panel: Conversation Thread & Reply Box -->
+      <div class="col-lg-8 col-xl-8 d-flex flex-column h-100" [class.d-block]="isChatOpenOnMobile"
+        [class.d-none]="!isChatOpenOnMobile && !selectedTicket" [class.d-lg-flex]="true">
+
+        <!-- Empty Placeholder -->
+        <div *ngIf="!selectedTicket"
+          class="d-flex flex-column align-items-center justify-content-center h-100 p-5 text-center text-muted"
+          style="min-height: 580px;">
+          <div class="rounded-circle d-flex align-items-center justify-content-center mb-3"
+            style="width: 72px; height: 72px; background: #FFF3E6; color: #FC800A;">
+            <i class="fa-solid fa-headset fs-2"></i>
           </div>
-          <div class="search-convo-container">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" placeholder="Search conversations..." class="search-convo-input" />
-          </div>
+          <h5 class="fw-bold text-dark mb-1">Select a Support Ticket</h5>
+          <p class="ct_fs_14 text-muted mb-0" style="max-width: 380px;">Choose any inquiry from the left queue to view
+            user details, message history, and respond.</p>
         </div>
 
-        <div class="threads-list-scrollable">
-          <!-- Thread 1 -->
-          <div class="thread-item-card active-thread" (click)="openChat()">
-            <div class="avatar-col">
-              <img src="assets/img/user.jpg" alt="Ustadh Hamza" class="thread-avatar-img" />
-              <span class="thread-online-dot"></span>
-            </div>
-            <div class="thread-info-col">
-              <div class="thread-name-row">
-                <h4 class="thread-teacher-name">Ustadh Hamza</h4>
-                <span class="thread-time">10:30 AM</span>
+        <!-- Selected Ticket Thread -->
+        <ng-container *ngIf="selectedTicket">
+          <!-- Conversation Header -->
+          <div class="p-3 px-4 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3"
+            style="background: linear-gradient(135deg, #FFFDFB 0%, #FFF8F0 100%); border-color: #F0EDE8 !important;">
+
+            <div class="d-flex align-items-center gap-3">
+              <button class="btn btn-sm btn-outline-secondary d-lg-none rounded-circle p-2" (click)="closeChat()">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+
+              <!-- Avatar -->
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold ct_fs_16 flex-shrink-0"
+                style="width: 46px; height: 46px; background: linear-gradient(135deg, #FC800A, #E56B00); box-shadow: 0 4px 10px rgba(252, 128, 10, 0.25);">
+                {{ selectedTicket.sender_name ? selectedTicket.sender_name.charAt(0).toUpperCase() : 'U' }}
               </div>
-              <span class="thread-subject">Teacher</span>
-              <div class="d-flex align-items-center justify-content-between gap-2">
-                <p class="thread-last-msg">Please complete page 20 and...</p>
-                <div class="thread-badge-col">
-                  <span class="unread-badge">2</span>
+
+              <div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <h5 class="fw-bold text-dark mb-0 ct_fs_16">{{ selectedTicket.subject }}</h5>
+                  <span class="badge px-2 py-1 font-monospace ct_fs_11"
+                    style="background:#1E293B; color:#F8FAFC; border-radius:6px;">
+                    {{ selectedTicket.ticket_number }}
+                  </span>
+                </div>
+
+                <div class="ct_fs_12 text-muted mt-1 d-flex align-items-center gap-3 flex-wrap">
+                  <span class="text-dark"><strong>From:</strong> {{ selectedTicket.sender_name }}</span>
+                  <span class="badge px-2 py-0.5 text-uppercase ct_fs_10 fw-bold"
+                    [style.background]="selectedTicket.user_role === 'parent' ? '#EEF2FF' : (selectedTicket.user_role === 'teacher' ? '#ECFDF5' : '#E0F2FE')"
+                    [style.color]="selectedTicket.user_role === 'parent' ? '#4F46E5' : (selectedTicket.user_role === 'teacher' ? '#059669' : '#0284C7')">
+                    {{ selectedTicket.user_role }}
+                  </span>
+                  <span><i class="fa-solid fa-envelope me-1" style="color:#FC800A;"></i>{{ selectedTicket.sender_email
+                    }}</span>
+                  <span *ngIf="selectedTicket.sender_phone"><i class="fa-solid fa-phone me-1"
+                      style="color:#FC800A;"></i>{{ selectedTicket.sender_phone }}</span>
+                  <span *ngIf="selectedTicket.student_grade" class="badge bg-white border text-dark">{{
+                    selectedTicket.student_grade }}</span>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Thread 2 -->
-          <div class="thread-item-card" (click)="openChat()">
-            <div class="avatar-col">
-              <img src="assets/img/user-f.jpg" alt="UA" class="thread-avatar-img" />
-            </div>
-            <div class="thread-info-col">
-              <div class="thread-name-row">
-                <h4 class="thread-teacher-name">Ustadh Ahmed</h4>
-                <span class="thread-time">Yesterday</span>
-              </div>
-              <span class="thread-subject">Teacher</span>
-              <div class="d-flex align-items-center justify-content-between gap-2">
-                <p class="thread-last-msg">JazakAllah for submitting...</p>
-              </div>
+            <!-- Status Changer Dropdown -->
+            <div class="d-flex align-items-center gap-2">
+              <label class="ct_fs_12 fw-bold text-muted text-nowrap">Status:</label>
+              <select class="form-select ct_fs_13 fw-bold px-3 py-1"
+                style="width: auto; height: 38px; border-radius: 10px; border: 1.5px solid #EAEAEA; background: #FFFFFF;"
+                [ngModel]="selectedTicket.status" (ngModelChange)="updateTicketStatus($event)">
+                <option value="open">🟡 Open</option>
+                <option value="in_progress">🔵 In Progress</option>
+                <option value="resolved">🟢 Resolved</option>
+                <option value="closed">⚪ Closed</option>
+              </select>
             </div>
           </div>
 
-          <!-- Thread 3 -->
-          <div class="thread-item-card" (click)="openChat()">
-            <div class="avatar-col">
-              <img src="assets/img/user.jpg" alt="UA" class="thread-avatar-img" />
-              <span class="thread-online-dot"></span>
-            </div>
-            <div class="thread-info-col">
-              <div class="thread-name-row">
-                <h4 class="thread-teacher-name">Ustadha Aisha</h4>
-                <span class="thread-time">Mon</span>
+          <!-- Messages Timeline Body -->
+          <div #messagesContainer class="p-4 overflow-auto flex-grow-1"
+            style="height: 380px; background: #F8F9FA; background-image: radial-gradient(#E2E8F0 1px, transparent 1px); background-size: 20px 20px;">
+
+            <!-- Original Inquiry Bubble -->
+            <!-- <div class="d-flex flex-column align-items-start mb-4">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="fw-bold ct_fs_13 text-dark">{{ selectedTicket.sender_name }}</span>
+                <span class="badge px-2 py-0.5 text-uppercase ct_fs_10"
+                  style="background:#E2E8F0; color:#475569; border-radius:6px;">
+                  ORIGINAL INQUIRY
+                </span>
               </div>
-              <span class="thread-subject">Teacher</span>
-              <div class="d-flex align-items-center justify-content-between gap-2">
-                <p class="thread-last-msg">Your assignment looks good.</p>
-                <div class="thread-badge-col">
-                  <span class="unread-badge">1</span>
+              <div class="p-3 bg-white shadow-sm"
+                style="max-width: 82%; border: 1px solid #E5E7EB; border-radius: 16px 16px 16px 4px;">
+                <p class="ct_fs_14 text-dark mb-0 fw-medium" style="line-height: 1.5;">{{ selectedTicket.subject }}</p>
+              </div>
+            </div> -->
+
+            <!-- Messages Stream -->
+            <div *ngFor="let msg of selectedTicket.messages" class="mb-4">
+
+              <!-- User Message (Left) -->
+              <div *ngIf="msg.sender !== 'admin'" class="d-flex flex-column align-items-start">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="fw-bold ct_fs_13 text-dark">{{ msg.sender_name || selectedTicket.sender_name }}</span>
+                  <small class="text-muted ct_fs_11">{{ msg.created_at | date:'shortTime' }}</small>
+                </div>
+                <div class="p-3 bg-white shadow-sm"
+                  style="max-width: 82%; border: 1px solid #E5E7EB; border-radius: 16px 16px 16px 4px;">
+                  <p class="ct_fs_14 text-dark mb-0" style="line-height: 1.5;">{{ msg.message }}</p>
                 </div>
               </div>
+
+              <!-- Admin Reply (Right) -->
+              <div *ngIf="msg.sender === 'admin'" class="d-flex flex-column align-items-end">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <small class="text-muted ct_fs_11">{{ msg.created_at | date:'shortTime' }}</small>
+                  <span class="fw-bold ct_fs_13 text-dark">TIA Support Team</span>
+                  <span class="badge text-white ct_fs_10 px-2 py-0.5"
+                    style="background: linear-gradient(135deg, #0267EB, #0251C4); border-radius: 6px;">
+                    <i class="fa-solid fa-shield-halved me-1"></i>ADMIN
+                  </span>
+                </div>
+                <div class="p-3 text-white shadow-sm"
+                  style="max-width: 82%; background: linear-gradient(135deg, #0267EB 0%, #0251C4 100%); border-radius: 16px 16px 4px 16px;">
+                  <p class="ct_fs_14 mb-0 text-white" style="line-height: 1.5;">{{ msg.message }}</p>
+                </div>
+              </div>
+
             </div>
           </div>
-        </div>
-      </aside>
 
+          <!-- Admin Reply Composer Bar -->
+          <div class="p-3 px-4 border-top bg-white" style="border-color: #F0EDE8 !important;">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="ct_fs_13 fw-bold text-dark">
+                <i class="fa-solid fa-reply me-1 text-primary"></i>Reply to Ticket
+              </span>
+              <div class="d-flex align-items-center gap-2">
+                <label class="ct_fs_12 text-muted fw-semibold">Update status to:</label>
+                <select class="form-select ct_fs_12 fw-semibold py-1 px-2"
+                  style="width: auto; height: 32px; border-radius: 8px; border: 1.5px solid #EAEAEA;"
+                  [(ngModel)]="replyStatusUpdate">
+                  <option value="">Leave Current</option>
+                  <option value="in_progress">🔵 In Progress</option>
+                  <option value="resolved">🟢 Mark Resolved</option>
+                  <option value="closed">⚪ Close Ticket</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="position-relative">
+              <textarea class="form-control ct_input p-3 ct_fs_14" rows="3"
+                style="border-radius: 12px; resize: none; border: 1.5px solid #EAEAEA; background: #FAFAFA;"
+                placeholder="Type your official response to the user..." [(ngModel)]="replyText"
+                (keydown.control.enter)="sendReply()"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
+              <small class="text-muted ct_fs_12">
+                <i class="fa-solid fa-keyboard me-1 text-secondary"></i>Press <kbd
+                  class="bg-light text-dark border px-1.5 py-0.5 rounded">Ctrl + Enter</kbd> to send
+              </small>
+
+              <button class="ct_gradient_btn text-nowrap px-4 py-2 border-0 d-flex align-items-center gap-2 shadow-sm"
+                style="background: linear-gradient(135deg, #FC800A 0%, #E66C00 100%) !important; color: #ffffff !important; border-radius: 10px; height: 42px; font-weight: 600; box-shadow: 0 4px 14px rgba(252, 128, 10, 0.3) !important;"
+                [disabled]="!replyText.trim() || isReplying" (click)="sendReply()">
+                <span *ngIf="isReplying" class="spinner-border spinner-border-sm text-white" role="status"></span>
+                <i *ngIf="!isReplying" class="fa-solid fa-paper-plane text-white"></i>
+                <span class="text-white fw-bold">{{ isReplying ? 'Sending...' : 'Send Reply' }}</span>
+              </button>
+            </div>
+          </div>
+
+        </ng-container>
+
+      </div>
     </div>
   </div>
 </div>

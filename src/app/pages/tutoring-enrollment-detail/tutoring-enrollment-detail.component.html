@@ -1,0 +1,319 @@
+<div class="ct_inner_header_bg mt-4 mb-5 ct_px_28">
+  <!-- Top Navigation & Status -->
+  <div class="d-flex justify-content-between align-items-center gap-3 mb-4 ct_flex_col_575">
+    <h3 class="ct_fs_20 ct_fw_600 text-dark d-flex align-items-center mb-0">
+      <a routerLink="/tutoring-enrollment"
+        class="text-decoration-none me-3 d-inline-flex align-items-center justify-content-center rounded-circle"
+        style="width:36px;height:36px;background:#FFF3E8;color:#FC800A;transition:all .2s;">
+        <i class="fa-solid fa-chevron-left" style="font-size:14px;"></i>
+      </a>
+      Tutoring Application Details
+    </h3>
+    <div *ngIf="enrollment">
+      <span class="ct_fs_13 fw-bold px-3 py-2 d-inline-flex align-items-center gap-2"
+        style="border-radius:10px;letter-spacing:.3px;"
+        [style.background]="(enrollment.status==='PENDING'||enrollment.status==='pending')?'#FFF3CD':((enrollment.status==='APPROVED'||enrollment.status==='approved'||enrollment.status==='ACTIVE'||enrollment.status==='active')?'#D1FAE5':'#FFE4E4')"
+        [style.color]="(enrollment.status==='PENDING'||enrollment.status==='pending')?'#92600A':((enrollment.status==='APPROVED'||enrollment.status==='approved'||enrollment.status==='ACTIVE'||enrollment.status==='active')?'#065F46':'#991B1B')">
+        <i class="fa-solid" style="font-size:11px;"
+          [ngClass]="(enrollment.status==='PENDING'||enrollment.status==='pending')?'fa-hourglass-half':((enrollment.status==='APPROVED'||enrollment.status==='approved'||enrollment.status==='ACTIVE'||enrollment.status==='active')?'fa-circle-check':'fa-circle-xmark')"></i>
+        {{ enrollment.status | uppercase }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border" role="status" style="color:#FC800A;width:40px;height:40px;"></div>
+    <p class="mt-3 ct_text_para ct_fs_14">Loading application details...</p>
+  </div>
+
+  <!-- Empty / Not Found -->
+  <div *ngIf="!isLoading && !enrollment" class="text-center py-5 bg-white ct_border_10 shadow-sm p-4">
+    <div style="font-size:48px;opacity:.3;">🔍</div>
+    <h5 class="ct_fw_600 text-dark mt-3 mb-1">Application Not Found</h5>
+    <p class="ct_text_para ct_fs_14 mb-3">The requested tutoring application record could not be loaded.</p>
+    <a routerLink="/tutoring-enrollment" class="btn text-white fw-semibold px-4 py-2"
+      style="background:linear-gradient(135deg,#FC800A,#E56B00);border-radius:10px;">
+      Back to Tutoring List
+    </a>
+  </div>
+
+  <!-- Main Content Card -->
+  <div *ngIf="!isLoading && enrollment" class="bg-white shadow-sm p-4 p-md-5"
+    style="border-radius:20px;border:1px solid #F0EDE8;">
+
+    <!-- Hero Header Banner -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 p-4 mb-4"
+      style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);border-radius:16px;border:1px solid rgba(252,128,10,0.15);">
+      <div class="d-flex align-items-center gap-3">
+        <div
+          class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold ct_fs_20 overflow-hidden"
+          style="width:58px;height:58px;background:linear-gradient(135deg,#FC800A,#E56B00);box-shadow:0 4px 12px rgba(252,128,10,0.35);flex-shrink:0;">
+          <img *ngIf="enrollment.profileImage" [src]="enrollment.profileImage" alt="Profile"
+            style="width:100%;height:100%;object-fit:cover;" />
+          <span *ngIf="!enrollment.profileImage">{{ enrollment.learnerName ?
+            enrollment.learnerName.charAt(0).toUpperCase() : 'T' }}</span>
+        </div>
+        <div>
+          <h4 class="ct_fs_20 ct_fw_700 text-dark mb-1">{{ enrollment.learnerName }}</h4>
+          <p class="ct_fs_13 mb-0 text-muted">
+            <span class="badge px-2 py-1 me-2" style="background:#FFE4CC;color:#C85E00;font-weight:600;">
+              {{ enrollment.academy || 'Global Academy' }}
+            </span>
+            <i class="fa-regular fa-calendar me-1"></i>Applied on {{ enrollment.formatted_date || enrollment.date ||
+            (enrollment.createdAt | date:'mediumDate') || 'Recent' }}
+          </p>
+        </div>
+      </div>
+      <div class="text-md-end">
+        <span class="ct_fs_12 text-muted text-uppercase fw-semibold d-block">Application ID</span>
+        <span class="ct_fs_15 fw-bold text-dark font-monospace">{{ enrollment.id }}</span>
+      </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="row g-4 mb-4">
+
+      <!-- Learner Information -->
+      <div class="col-12">
+        <div class="p-4 h-100" style="background:#FAFAFA;border-radius:16px;border:1px solid #EFEFEF;">
+          <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+            <i class="fa-solid fa-graduation-cap" style="color:#FC800A;font-size:18px;"></i>
+            <h5 class="ct_fs_16 ct_fw_700 text-dark mb-0">Learner Information</h5>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-4 col-sm-6">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Learner Name</label>
+              <span class="ct_fs_15 fw-bold text-dark d-block">{{ enrollment.learnerName }}</span>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Learner Email</label>
+              <span class="ct_fs_14 fw-semibold text-primary d-block text-break">
+                <i class="fa-solid fa-envelope me-1" style="font-size:12px;"></i>
+                {{ enrollment.learnerEmail || enrollment.email || 'N/A' }}
+              </span>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Phone Number</label>
+              <span class="ct_fs_14 fw-semibold text-dark d-block" *ngIf="enrollment.phone && enrollment.phone !== 'N/A'">
+                <i class="fa-solid fa-phone me-1 text-muted" style="font-size:12px;"></i>
+                {{ enrollment.phone }}
+              </span>
+              <span class="ct_fs_14 text-muted fst-italic d-block" *ngIf="!enrollment.phone || enrollment.phone === 'N/A'">
+                <i class="fa-solid fa-phone-slash me-1 text-muted" style="font-size:12px;"></i>
+                No phone provided
+              </span>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Program Academy</label>
+              <span class="ct_fs_14 fw-semibold text-dark d-block">{{ enrollment.academy || 'Global Academy' }}</span>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Subject / Focus</label>
+              <span class="d-inline-block ct_fs_13 fw-semibold px-3 py-1 text-dark"
+                style="background:#FFF3E8;color:#C85E00;border-radius:8px;border:1px solid rgba(252,128,10,0.25);">
+                {{ enrollment.subject || enrollment.academy || 'Global Academy' }}
+              </span>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Grade Level</label>
+              <div>
+                <span class="badge bg-light text-dark border ct_fs_13 px-2 py-1">{{ enrollment.gradeLevel || 'Pre-K' }}</span>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Date of Birth</label>
+              <span class="ct_fs_14 fw-semibold text-dark d-block">
+                <i class="fa-regular fa-calendar-days me-1 text-muted"></i>{{ (enrollment.dob | date:'mediumDate') || 'N/A' }}
+              </span>
+            </div>
+            <div class="col-12" *ngIf="enrollment.notes">
+              <label class="ct_fs_12 fw-semibold text-muted text-uppercase mb-1 d-block">Notes / Remarks</label>
+              <p class="ct_fs_14 text-dark mb-0">{{ enrollment.notes }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assignments Information -->
+      <div class="col-12">
+        <div class="p-4" style="background:#FAFAFA;border-radius:16px;border:1px solid #EFEFEF;">
+          <!-- Section Header & Stats Pills -->
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3 pb-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-book-open" style="color:#0267EB;font-size:18px;"></i>
+              <h5 class="ct_fs_16 ct_fw_700 text-dark mb-0">Assignments Information</h5>
+              <span class="badge rounded-pill bg-light text-dark border px-2 py-1 ms-1">
+                {{ enrollment.assignments?.length || 0 }}
+              </span>
+            </div>
+
+            <!-- Stats Badges -->
+            <div *ngIf="enrollment.assignment_stats" class="d-flex align-items-center flex-wrap gap-2">
+              <span class="badge px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1"
+                style="background:#F3F4F6;color:#374151;border-radius:8px;font-size:12px;">
+                Total: <strong>{{ enrollment.assignment_stats.total }}</strong>
+              </span>
+              <span class="badge px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1"
+                style="background:#FFF3CD;color:#92600A;border-radius:8px;font-size:12px;">
+                Pending: <strong>{{ enrollment.assignment_stats.pending }}</strong>
+              </span>
+              <span class="badge px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1"
+                style="background:#E0F2FE;color:#0369A1;border-radius:8px;font-size:12px;">
+                Submitted: <strong>{{ enrollment.assignment_stats.submitted }}</strong>
+              </span>
+              <span class="badge px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1"
+                style="background:#D1FAE5;color:#065F46;border-radius:8px;font-size:12px;">
+                Graded: <strong>{{ enrollment.assignment_stats.graded }}</strong>
+              </span>
+              <span *ngIf="enrollment.assignment_stats.overdue > 0"
+                class="badge px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1"
+                style="background:#FFE4E4;color:#991B1B;border-radius:8px;font-size:12px;">
+                Overdue: <strong>{{ enrollment.assignment_stats.overdue }}</strong>
+              </span>
+            </div>
+          </div>
+
+          <!-- Assignments Table -->
+          <div *ngIf="enrollment.assignments && enrollment.assignments.length > 0" class="table-responsive">
+            <table class="table table-bordered align-middle mb-0 bg-white" style="border-radius:10px;overflow:hidden;">
+              <thead class="table-light">
+                <tr>
+                  <th class="ct_fs_12 fw-bold text-muted py-2" style="min-width:260px;">Title & Description</th>
+                  <th class="ct_fs_12 fw-bold text-muted py-2">Subject</th>
+                  <th class="ct_fs_12 fw-bold text-muted py-2">Grade Level</th>
+                  <th class="ct_fs_12 fw-bold text-muted py-2">Due Date</th>
+                  <th class="ct_fs_12 fw-bold text-muted py-2">Total Points</th>
+                  <th class="ct_fs_12 fw-bold text-muted py-2">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let asg of enrollment.assignments">
+                  <td>
+                    <div class="d-flex flex-column py-1">
+                      <span class="fw-bold text-dark ct_fs_14">{{ asg.title }}</span>
+                      <span *ngIf="asg.description" class="text-muted ct_fs_12 mt-1">{{ asg.description }}</span>
+                      <div *ngIf="asg.attachmentUrl" class="mt-2">
+                        <a [href]="asg.attachmentUrl" target="_blank"
+                          class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2 py-1"
+                          style="font-size:11px;border-radius:6px;">
+                          <i class="fa-solid fa-paperclip"></i> View Attachment
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="ct_fs_13">
+                    <span class="badge px-2 py-1" style="background:#FFF3E8;color:#C85E00;font-weight:600;">
+                      {{ asg.subject || 'N/A' }}
+                    </span>
+                  </td>
+                  <td class="ct_fs_13">
+                    <span class="badge bg-light text-dark border">{{ asg.gradeLevel || enrollment.gradeLevel || 'N/A' }}</span>
+                  </td>
+                  <td class="ct_fs_13 text-nowrap">
+                    <i class="fa-regular fa-calendar me-1 text-muted"></i>
+                    {{ asg.dueDate || (asg.due_date | date:'mediumDate') || 'N/A' }}
+                  </td>
+                  <td class="ct_fs_13 fw-bold text-dark text-nowrap">
+                    {{ asg.totalPoints !== undefined && asg.totalPoints !== null ? (asg.totalPoints + ' pts') : 'N/A' }}
+                  </td>
+                  <td>
+                    <span class="badge px-2 py-1"
+                      [style.background]="(asg.status==='graded'||asg.status==='GRADED')?'#D1FAE5':((asg.status==='submitted'||asg.status==='SUBMITTED')?'#E0F2FE':((asg.status==='overdue'||asg.status==='OVERDUE')?'#FFE4E4':'#FFF3CD'))"
+                      [style.color]="(asg.status==='graded'||asg.status==='GRADED')?'#065F46':((asg.status==='submitted'||asg.status==='SUBMITTED')?'#0369A1':((asg.status==='overdue'||asg.status==='OVERDUE')?'#991B1B':'#92600A'))">
+                      {{ (asg.statusLabel || asg.status || 'PENDING') | uppercase }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="!enrollment.assignments || enrollment.assignments.length === 0" class="text-center py-4 bg-white rounded-3 border">
+            <i class="fa-solid fa-clipboard-list text-muted mb-2" style="font-size:32px;opacity:0.35;"></i>
+            <p class="ct_fs_14 text-muted mb-0">No assignments recorded for this tutoring application yet.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 pt-3 border-top">
+      <a routerLink="/tutoring-enrollment" class="btn px-4 py-2 fw-semibold"
+        style="background:#F3F4F6;color:#4B5563;border:none;border-radius:10px;">
+        <i class="fa-solid fa-arrow-left me-2"></i>Back to List
+      </a>
+
+      <!-- Pending Actions -->
+      <div *ngIf="(enrollment.status || '').toUpperCase() === 'PENDING'" class="d-flex align-items-center gap-3">
+        <button type="button" class="btn px-4 py-2 fw-semibold"
+          style="background:#fff;color:#F13E3E;border:1.5px solid #F13E3E;border-radius:10px;"
+          (click)="rejectEnrollment()">
+          <i class="fa-solid fa-xmark me-2"></i>Decline Application
+        </button>
+        <button type="button" class="btn text-white px-4 py-2 fw-semibold"
+          style="background:linear-gradient(135deg,#00B536,#00932C);border:none;border-radius:10px;box-shadow:0 4px 12px rgba(0,181,54,0.3);"
+          (click)="approveEnrollment()">
+          <i class="fa-solid fa-check me-2"></i>Approve Application
+        </button>
+      </div>
+
+      <!-- Already Processed Notice -->
+      <div *ngIf="(enrollment.status || '').toUpperCase() !== 'PENDING'"
+        class="d-flex align-items-center gap-2 text-muted ct_fs_14 fw-semibold">
+        <i class="fa-solid fa-circle-info text-primary"></i>
+        This application has already been processed as
+        <span class="badge ms-1"
+          [ngClass]="(enrollment.status==='REJECTED'||enrollment.status==='rejected')?'bg-danger':'bg-success'">
+          {{ enrollment.status | uppercase }}
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Custom Confirm Modal -->
+  <div *ngIf="showConfirmModal" class="modal fade show d-block" tabindex="-1"
+    style="background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);z-index:99999;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius:22px;overflow:hidden;">
+        <div class="modal-body text-center p-5">
+          <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+            style="width:72px;height:72px;" [style.background]="confirmType==='approve'?'#D1FAE5':'#FFE4E4'">
+            <i class="fa-solid fa-2x" [ngClass]="confirmType==='approve'?'fa-circle-check':'fa-circle-xmark'"
+              [style.color]="confirmType==='approve'?'#00B536':'#F13E3E'"></i>
+          </div>
+          <h5 class="ct_fs_20 ct_fw_700 mb-2 text-dark">{{ confirmTitle }}</h5>
+          <p class="ct_text_para ct_fs_14 mb-4 px-2">{{ confirmMessage }}</p>
+          <div class="d-flex justify-content-center gap-3">
+            <button type="button" class="btn px-4 py-2 fw-semibold"
+              style="background:#F5F5F5;color:#555;border:none;border-radius:10px;min-width:110px;"
+              (click)="closeConfirmModal()">Cancel</button>
+            <button type="button" class="btn text-white px-4 py-2 fw-semibold"
+              style="min-width:160px;border:none;border-radius:10px;"
+              [style.background]="confirmType==='approve'?'linear-gradient(135deg,#00B536,#00932C)':'linear-gradient(135deg,#F13E3E,#CC2828)'"
+              (click)="onConfirm()">
+              <i class="fa-solid me-1" style="font-size:12px;"
+                [ngClass]="confirmType==='approve'?'fa-check':'fa-times'"></i>
+              {{ confirmType === 'approve' ? 'Yes, Approve' : 'Yes, Decline' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div *ngIf="showToastMessage" class="position-fixed d-flex align-items-center gap-3 px-4 py-3 shadow-lg bg-white"
+    style="top:24px; right:24px; z-index:99999; border-radius:14px; min-width:320px; border-left:5px solid;"
+    [style.border-left-color]="toastType==='success'?'#00B536':toastType==='error'?'#F13E3E':'#0267EB'">
+    <i class="fa-solid fa-circle-check fs-5"
+      [style.color]="toastType==='success'?'#00B536':toastType==='error'?'#F13E3E':'#0267EB'"></i>
+    <span class="fw-semibold ct_fs_14 text-dark">{{ toastMessage }}</span>
+  </div>
+
+</div>

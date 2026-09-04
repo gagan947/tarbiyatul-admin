@@ -18,11 +18,14 @@ export class CreateSchoolEventComponent {
   successMessage = '';
 
   categoryOptions: string[] = ['STUDENT', 'PARENT', 'TEACHER'];
-  gradeOptions: string[] = ['Kindergarten',
+  gradeOptions: string[] = [
+    'Pre-K',
+    'Kindergarten',
     '1st Grade',
     '2nd Grade',
     '3rd Grade',
-    '4th Grade',];
+    '4th Grade'
+  ];
 
   constructor(
     private fb: FormBuilder,

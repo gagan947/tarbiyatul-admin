@@ -1,0 +1,280 @@
+<div class="ct_inner_header_bg mt-4 mb-5 ct_px_28">
+  <!-- Toast notification -->
+  <div *ngIf="showToast" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <div class="toast show align-items-center text-white bg-dark border-0 shadow-lg px-3 py-2 rounded-3">
+      <div class="d-flex align-items-center">
+        <div class="toast-body fs-6">{{ toastMessage }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+      <h4 class="ct_fs_24 ct_fw_300 mb-1">Forms &amp; PDF Document Repository</h4>
+      <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Upload and manage official PDF forms for admission, fees, and health reports.</p>
+    </div>
+    <button class="ct_gradient_btn text-nowrap px-4 py-2 d-flex align-items-center justify-content-center gap-2 border-0 shadow-sm" 
+      style="background: linear-gradient(135deg, #FC800A 0%, #E66C00 100%) !important; color: #ffffff !important; border-radius: 8px; height: 48px; font-weight: 600;" 
+      (click)="openAddModal()">
+      <i class="fa-solid fa-cloud-arrow-up fs-6 text-white"></i>
+      <span class="text-white fw-bold">Upload New PDF Form</span>
+    </button>
+  </div>
+
+  <!-- Search & Category Filters -->
+  <div class="card p-3 border-0 shadow-sm mb-4 ct_border_18">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-5">
+        <div class="position-relative">
+          <input type="text" class="form-control ps-5 ct_input" placeholder="Search forms by title or description..." [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)">
+          <i class="fa-solid fa-magnifying-glass position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+        </div>
+      </div>
+      <div class="col-md-7 d-flex gap-2 justify-content-md-end flex-wrap">
+        <button class="btn btn-sm rounded-pill px-3 fw-semibold border-0" 
+          [style.background-color]="selectedCategory === 'All' ? '#FC800A' : '#F0F0F0'" 
+          [style.color]="selectedCategory === 'All' ? '#FFFFFF' : '#555555'" 
+          (click)="selectCategory('All')">
+          All
+        </button>
+        <button *ngFor="let cat of categories" class="btn btn-sm rounded-pill px-3 fw-semibold border-0" 
+          [style.background-color]="selectedCategory === cat ? '#FC800A' : '#F0F0F0'" 
+          [style.color]="selectedCategory === cat ? '#FFFFFF' : '#555555'" 
+          (click)="selectCategory(cat)">
+          {{ cat }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border" role="status" style="color:#FC800A;width:40px;height:40px;"></div>
+    <p class="mt-3 ct_text_para ct_fs_14">Loading forms repository...</p>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading" class="table-responsive ct_custom_table bg-white p-3 ct_border_18 shadow-sm">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Document Title</th>
+          <th>Category</th>
+          <th>File Name / Size</th>
+          <th>Last Updated</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let form of filteredForms">
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="pdf-icon-badge">
+                <i class="fa-solid fa-file-pdf text-danger fs-3"></i>
+              </div>
+              <div>
+                <h6 class="mb-0 fw-bold text-dark ct_fs_16">{{ form.title }}</h6>
+                <small class="text-muted ct_fs_13 d-block text-truncate" style="max-width: 320px;">{{ form.description }}</small>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">{{ form.category }}</span>
+          </td>
+          <td>
+            <div class="ct_fs_14 font-monospace">{{ form.fileName }}</div>
+            <small class="text-muted ct_fs_12">{{ form.fileSize }}</small>
+          </td>
+          <td><span class="ct_fs_14 text-secondary">{{ form.updatedAt }}</span></td>
+          <td>
+            <button class="btn btn-sm badge rounded-pill px-3 py-2 border-0" [class.bg-success-subtle]="form.active" [class.text-success]="form.active" [class.bg-danger-subtle]="!form.active" [class.text-danger]="!form.active" (click)="toggleActive(form)">
+              <i class="fa-solid me-1" [class.fa-circle-check]="form.active" [class.fa-circle-xmark]="!form.active"></i>
+              {{ form.active ? 'Active' : 'Hidden' }}
+            </button>
+          </td>
+          <td class="text-end">
+            <div class="d-flex gap-2 justify-content-end">
+              <button class="btn btn-outline-primary btn-sm rounded-pill" (click)="openPreview(form)" title="Preview PDF">
+                <i class="fa-solid fa-eye"></i> Preview
+              </button>
+              <button class="btn btn-outline-secondary btn-sm rounded-pill" (click)="openEditModal(form)" title="Edit Metadata">
+                <i class="fa-solid fa-pen"></i> Edit
+              </button>
+              <button class="btn btn-outline-danger btn-sm rounded-pill" (click)="confirmDelete(form)" title="Delete Form">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="filteredForms.length === 0">
+          <td colspan="6" class="text-center py-5 text-muted">
+            <i class="fa-solid fa-folder-open fs-1 mb-2 d-block opacity-50"></i>
+            No forms found matching your criteria.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div *ngIf="showAddModal" class="modal fade show d-block tab-modal-backdrop" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content ct_border_radius_20 shadow-lg border-0">
+      <div class="modal-header border-0 pb-0 px-4 pt-4">
+        <h5 class="modal-title ct_fs_20 ct_fw_600">Upload New PDF Form</h5>
+        <button type="button" class="btn-close" (click)="showAddModal = false"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form (submit)="saveNewForm(); $event.preventDefault();">
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label fw-semibold">Form Title *</label>
+              <input type="text" class="form-control ct_input" placeholder="e.g. Child Medical History Form" [(ngModel)]="formData.title" name="title" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Category</label>
+              <select class="form-select ct_input" [(ngModel)]="formData.category" name="category">
+                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Description</label>
+              <textarea class="form-control ct_input" rows="2" placeholder="Brief explanation of who needs to fill this form..." [(ngModel)]="formData.description" name="description"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Upload PDF Document *</label>
+              <input type="file" class="form-control ct_input" accept=".pdf,application/pdf" (change)="onFileSelected($event)">
+              <small class="text-muted mt-1 d-block">Supported file types: PDF (Max size: 15MB)</small>
+            </div>
+            <div class="col-12" *ngIf="formData.fileName">
+              <div class="p-3 bg-light rounded border d-flex align-items-center gap-3">
+                <i class="fa-solid fa-file-pdf text-danger fs-2"></i>
+                <div>
+                  <div class="fw-bold text-dark">{{ formData.fileName }}</div>
+                  <small class="text-muted">{{ formData.fileSize }}</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="activeSwitch" [(ngModel)]="formData.active" name="active">
+                <label class="form-check-input-label fw-semibold" for="activeSwitch">Publish immediately on storefront</label>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-3 mt-4">
+            <button type="button" class="btn btn-light px-4 rounded-pill" (click)="showAddModal = false">Cancel</button>
+            <button type="submit" [disabled]="isSubmitting" class="ct_gradient_btn text-nowrap px-4 py-2 border-0 d-flex align-items-center gap-2" style="border-radius: 6px;">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm text-white" role="status"></span>
+              <span>{{ isSubmitting ? 'Uploading...' : 'Upload Form' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div *ngIf="showEditModal" class="modal fade show d-block tab-modal-backdrop" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content ct_border_radius_20 shadow-lg border-0">
+      <div class="modal-header border-0 pb-0 px-4 pt-4">
+        <h5 class="modal-title ct_fs_20 ct_fw_600">Edit Form Metadata</h5>
+        <button type="button" class="btn-close" (click)="showEditModal = false"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form (submit)="updateForm(); $event.preventDefault();">
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label fw-semibold">Form Title *</label>
+              <input type="text" class="form-control ct_input" [(ngModel)]="formData.title" name="editTitle" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Category</label>
+              <select class="form-select ct_input" [(ngModel)]="formData.category" name="editCategory">
+                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Description</label>
+              <textarea class="form-control ct_input" rows="2" [(ngModel)]="formData.description" name="editDescription"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Replace PDF File (Optional)</label>
+              <input type="file" class="form-control ct_input" accept=".pdf,application/pdf" (change)="onFileSelected($event)">
+              <small class="text-muted">Current file: {{ formData.fileName }} ({{ formData.fileSize }})</small>
+            </div>
+            <div class="col-12">
+              <div class="form-check form-switch mt-2">
+                <input class="form-check-input" type="checkbox" id="editActiveSwitch" [(ngModel)]="formData.active" name="editActive">
+                <label class="form-check-input-label fw-semibold" for="editActiveSwitch">Active on Storefront</label>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-3 mt-4">
+            <button type="button" class="btn btn-light px-4 rounded-pill" (click)="showEditModal = false">Cancel</button>
+            <button type="submit" [disabled]="isSubmitting" class="ct_gradient_btn text-nowrap px-4 py-2 border-0 d-flex align-items-center gap-2" style="border-radius: 6px;">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm text-white" role="status"></span>
+              <span>{{ isSubmitting ? 'Saving...' : 'Save Changes' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW MODAL -->
+<div *ngIf="showPreviewModal" class="modal fade show d-block tab-modal-backdrop" style="background: rgba(0,0,0,0.6); z-index: 99999;">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content ct_border_radius_20 shadow-lg border-0">
+      <div class="modal-header border-0 pb-2 px-4 pt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h5 class="modal-title ct_fs_20 ct_fw_600 text-dark mb-0">{{ previewForm?.title }}</h5>
+          <small class="text-muted">{{ previewForm?.fileName }} • {{ previewForm?.fileSize }}</small>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+          <a [href]="rawPreviewUrl" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Open in New Tab
+          </a>
+          <a [href]="rawPreviewUrl" [download]="previewForm?.fileName || 'document.pdf'" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+            <i class="fa-solid fa-download me-1"></i> Download
+          </a>
+          <button type="button" class="btn-close ms-2" (click)="closePreview()"></button>
+        </div>
+      </div>
+      <div class="modal-body p-3">
+        <div *ngIf="isPreviewLoading" class="text-center py-5">
+          <div class="spinner-border" role="status" style="color:#FC800A;"></div>
+          <p class="mt-2 text-muted">Loading PDF Preview...</p>
+        </div>
+        <div *ngIf="!isPreviewLoading" class="w-100 rounded border overflow-hidden position-relative" style="height: 650px; background: #525659;">
+          <iframe *ngIf="safePreviewUrl" [src]="safePreviewUrl" class="w-100 h-100 border-0" title="PDF Preview"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div *ngIf="showDeleteModal" class="modal fade show d-block tab-modal-backdrop" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content ct_border_radius_20 shadow-lg border-0">
+      <div class="modal-body p-4 text-center">
+        <div class="text-danger fs-1 mb-3">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h4 class="ct_fs_22 ct_fw_600 mb-2">Delete Form?</h4>
+        <p class="text-muted mb-4">Are you sure you want to remove <strong>{{ formToDelete?.title }}</strong>? This action cannot be undone.</p>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-light rounded-pill px-4" (click)="showDeleteModal = false">Cancel</button>
+          <button class="btn btn-danger rounded-pill px-4" (click)="deleteForm()">Delete Form</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

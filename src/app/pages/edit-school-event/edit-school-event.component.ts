@@ -21,6 +21,7 @@ export class EditSchoolEventComponent implements OnInit {
 
   categoryOptions: string[] = ['STUDENT', 'PARENT', 'TEACHER'];
   gradeOptions: string[] = [
+    'Pre-K',
     'Kindergarten',
     '1st Grade',
     '2nd Grade',
@@ -143,7 +144,7 @@ export class EditSchoolEventComponent implements OnInit {
       grades: this.eventForm.value.grades
     };
 
-    this.apiService.patch<any>(`admin/events/${this.eventId}`, payload).subscribe({
+    this.apiService.put<any>(`admin/events/${this.eventId}`, payload).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.successMessage = res?.message || 'Event updated successfully!';
@@ -151,10 +152,21 @@ export class EditSchoolEventComponent implements OnInit {
           this.router.navigate(['/school-events']);
         }, 1200);
       },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Error updating event:', err);
-        this.errorMessage = err.error?.message || err.message || 'Failed to update event. Please try again.';
+      error: () => {
+        this.apiService.patch<any>(`admin/events/${this.eventId}`, payload).subscribe({
+          next: (res) => {
+            this.isLoading = false;
+            this.successMessage = res?.message || 'Event updated successfully!';
+            setTimeout(() => {
+              this.router.navigate(['/school-events']);
+            }, 1200);
+          },
+          error: (err) => {
+            this.isLoading = false;
+            console.error('Error updating event:', err);
+            this.errorMessage = err.error?.message || err.message || 'Failed to update event. Please try again.';
+          }
+        });
       }
     });
   }

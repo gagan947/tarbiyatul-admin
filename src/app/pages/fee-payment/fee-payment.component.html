@@ -1,76 +1,95 @@
 <div class="ct_inner_header_bg mt-4 mb-5 ct_px_28">
   <div class="ct_main_head mb-4">
-    <h4 class="ct_fs_24 ct_fw_300 mb-1">Fee Payments</h4>
-    <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Monitor tuition payments, outstanding balances, and payment status for all students.</p>
+    <h4 class="ct_fs_24 ct_fw_700 mb-1 text-dark">Fee Payments</h4>
+    <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Monitor tuition payments, outstanding balances, and payment status
+      for all students.</p>
   </div>
 
   <div class="row">
     <!-- Chart Section -->
     <div class="col-xl-7 mb-4">
-      <div class="bg-white p-4 ct_border_18">
-        <div class="d-flex justify-content-between">
-          <div class="card-label ct_fs_18 ct_fw_300 ct_ff_Rowdies">Fees Collection</div>
-          <select class="year-select">
-            <option>2025</option>
-            <option>2024</option>
-            <option>2023</option>
+      <div class="bg-white p-4 ct_border_18 shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="card-label ct_fs_18 ct_fw_700 text-dark">Fees Collection</div>
+          <select class="form-select year-select ct_input py-1 px-3"
+            style="width: auto; min-width: 90px; height: 36px; border-radius: 8px;" [(ngModel)]="selectedYear"
+            (ngModelChange)="onYearChange($event)">
+            <option *ngFor="let y of years" [value]="y">{{ y }}</option>
           </select>
         </div>
-        <div id="feesChart"></div>
+        <div id="feesChart" style="min-height: 228px;"></div>
       </div>
     </div>
 
     <!-- Summary Box Section -->
     <div class="col-xl-5 mb-4">
-      <div class="bg-white p-4 ct_border_18">
-        <h3 class="ct_fs_18 ct_fw_300 ct_mb_12">Fee Overview</h3>
-        <div class="row">
-          <div class="col-sm-6 mb-3">
-            <div class="ct_fee_box blue_box">
+      <div class="bg-white p-4 ct_border_18 shadow-sm h-100">
+        <h3 class="ct_fs_18 ct_fw_700 text-dark ct_mb_12 mb-3">Fee Overview</h3>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="ct_fee_box blue_box p-3 rounded-3" style="background:#EEF5FF;border:1px solid #D5E5FF;">
               <div>
-                <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Total Invoices</p>
-                <h6 class="ct_fs_24 ct_fw_300" style="color: #0266e8;">76772</h6>
+                <p class="ct_fs_14 ct_fw_600 text-muted mb-1">Total Invoices</p>
+                <h6 class="ct_fs_24 ct_fw_700 mb-0" style="color: #0266e8;">{{ overview.total_invoices }}</h6>
               </div>
-              <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.75 4.75H4.75M6.75 8.75H4.75M0.75 17.396V6.804C0.75 3.95 0.75 2.524 1.629 1.637C2.507 0.75 3.922 0.75 6.75 0.75H10.75C13.578 0.75 14.993 0.75 15.871 1.637C16.75 2.523 16.75 3.95 16.75 6.804V17.396C16.75 18.907 16.75 19.663 16.288 19.961C15.533 20.447 14.366 19.427 13.779 19.057C13.294 18.751 13.052 18.599 12.782 18.59C12.492 18.58 12.245 18.727 11.721 19.057L9.81 20.262C9.294 20.587 9.037 20.75 8.75 20.75C8.463 20.75 8.206 20.587 7.69 20.262L5.78 19.057C5.294 18.751 5.052 18.599 4.783 18.59C4.492 18.58 4.245 18.727 3.721 19.057C3.134 19.427 1.967 20.447 1.211 19.961C0.75 19.663 0.75 18.908 0.75 17.396Z" stroke="#0267EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M11.25 8.625C10.422 8.625 9.75 9.213 9.75 9.938C9.75 10.662 10.422 11.25 11.25 11.25C12.078 11.25 12.75 11.838 12.75 12.563C12.75 13.287 12.078 13.875 11.25 13.875M11.25 8.625C11.903 8.625 12.459 8.99 12.665 9.5M11.25 8.625V7.75M11.25 13.875C10.597 13.875 10.041 13.51 9.835 13M11.25 13.875V14.75" stroke="#0267EB" stroke-width="1.5" stroke-linecap="round"/>
+              <svg width="22" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12.75 4.75H4.75M6.75 8.75H4.75M0.75 17.396V6.804C0.75 3.95 0.75 2.524 1.629 1.637C2.507 0.75 3.922 0.75 6.75 0.75H10.75C13.578 0.75 14.993 0.75 15.871 1.637C16.75 2.523 16.75 3.95 16.75 6.804V17.396C16.75 18.907 16.75 19.663 16.288 19.961C15.533 20.447 14.366 19.427 13.779 19.057C13.294 18.751 13.052 18.599 12.782 18.59C12.492 18.58 12.245 18.727 11.721 19.057L9.81 20.262C9.294 20.587 9.037 20.75 8.75 20.75C8.463 20.75 8.206 20.587 7.69 20.262L5.78 19.057C5.294 18.751 5.052 18.599 4.783 18.59C4.492 18.58 4.245 18.727 3.721 19.057C3.134 19.427 1.967 20.447 1.211 19.961C0.75 19.663 0.75 18.908 0.75 17.396Z"
+                  stroke="#0267EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                  d="M11.25 8.625C10.422 8.625 9.75 9.213 9.75 9.938C9.75 10.662 10.422 11.25 11.25 11.25C12.078 11.25 12.75 11.838 12.75 12.563C12.75 13.287 12.078 13.875 11.25 13.875M11.25 8.625C11.903 8.625 12.459 8.99 12.665 9.5M11.25 8.625V7.75M11.25 13.875C10.597 13.875 10.041 13.51 9.835 13M11.25 13.875V14.75"
+                  stroke="#0267EB" stroke-width="1.5" stroke-linecap="round" />
               </svg>
             </div>
           </div>
-          <div class="col-sm-6 mb-3">
-            <div class="ct_fee_box green_box">
+          <div class="col-sm-6">
+            <div class="ct_fee_box green_box p-3 rounded-3" style="background:#EEFAF2;border:1px solid #C8F0D6;">
               <div>
-                <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Paid Invoices</p>
-                <h6 class="ct_fs_24 ct_fw_300" style="color: #00b336;">76772</h6>
+                <p class="ct_fs_14 ct_fw_600 text-muted mb-1">Paid Invoices</p>
+                <h6 class="ct_fs_24 ct_fw_700 mb-0" style="color: #00b336;">{{ overview.paid_invoices }}</h6>
               </div>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3.25 5C3.25 4.27065 3.53973 3.57118 4.05546 3.05546C4.57118 2.53973 5.27065 2.25 6 2.25H16C16.7293 2.25 17.4288 2.53973 17.9445 3.05546C18.4603 3.57118 18.75 4.27065 18.75 5V10.5C18.75 10.6989 18.671 10.8897 18.5303 11.0303C18.3897 11.171 18.1989 11.25 18 11.25C17.8011 11.25 17.6103 11.171 17.4697 11.0303C17.329 10.8897 17.25 10.6989 17.25 10.5V5C17.25 4.31 16.69 3.75 16 3.75H6C5.31 3.75 4.75 4.31 4.75 5V19.382C4.74992 19.4247 4.76076 19.4667 4.78149 19.504C4.80223 19.5413 4.83216 19.5726 4.86845 19.5951C4.90474 19.6175 4.94617 19.6303 4.9888 19.6322C5.03144 19.6342 5.07385 19.6251 5.112 19.606L6.112 19.106C6.40259 18.9607 6.72787 18.8993 7.05143 18.9284C7.37498 18.9575 7.68404 19.0762 7.944 19.271L8.85 19.95C8.89327 19.9825 8.94591 20 9 20C9.05409 20 9.10673 19.9825 9.15 19.95L10.012 19.303C10.2903 19.0945 10.6244 18.9736 10.9718 18.9558C11.3191 18.9379 11.6638 19.024 11.962 19.203L12.636 19.607C12.7215 19.6572 12.7962 19.7238 12.8557 19.803C12.9153 19.8822 12.9586 19.9724 12.9831 20.0685C13.0076 20.1645 13.0128 20.2645 12.9984 20.3625C12.9841 20.4606 12.9504 20.5549 12.8994 20.6398C12.8484 20.7248 12.781 20.7988 12.7012 20.8576C12.6214 20.9164 12.5308 20.9588 12.4345 20.9824C12.3382 21.0059 12.2382 21.0101 12.1403 20.9948C12.0424 20.9794 11.9485 20.9449 11.864 20.893L11.191 20.489C11.1484 20.4633 11.0991 20.4509 11.0494 20.4534C10.9997 20.4559 10.9518 20.4732 10.912 20.503L10.05 21.15C9.74708 21.3772 9.37865 21.5 9 21.5C8.62135 21.5 8.25292 21.3772 7.95 21.15L7.044 20.47C7.00688 20.4424 6.96283 20.4256 6.91675 20.4216C6.87068 20.4175 6.82437 20.4263 6.783 20.447L5.783 20.947C5.5162 21.1435 5.2197 21.1435 4.92167 21.1302C4.62364 21.1168 4.33397 21.0275 4.08017 20.8707C3.82638 20.7139 3.61688 20.4948 3.47158 20.2343C3.32629 19.9737 3.25001 19.6803 3.25 19.382V5Z" fill="#00B536"/>
-                <path d="M17.5 14.75C16.7707 14.75 16.0712 15.0397 15.5555 15.5555C15.0397 16.0712 14.75 16.7707 14.75 17.5C14.75 18.2293 15.0397 18.9288 15.5555 19.4445C16.0712 19.9603 16.7707 20.25 17.5 20.25C18.2293 20.25 18.9288 19.9603 19.4445 19.4445C19.9603 18.9288 20.25 18.2293 20.25 17.5C20.25 16.7707 19.9603 16.0712 19.4445 15.5555C18.9288 15.0397 18.2293 14.75 17.5 14.75ZM13.25 17.5C13.25 16.9419 13.3599 16.3892 13.5735 15.8736C13.7871 15.358 14.1001 14.8894 14.4948 14.4948C14.8894 14.1001 15.358 13.7871 15.8736 13.5735C16.3892 13.3599 16.9419 13.25 17.5 13.25C18.0581 13.25 18.6108 13.3599 19.1264 13.5735C19.642 13.7871 20.1106 14.1001 20.5052 14.4948C20.8999 14.8894 21.2129 15.358 21.4265 15.8736C21.6401 16.3892 21.75 16.9419 21.75 17.5C21.75 18.6272 21.3022 19.7082 20.5052 20.5052C19.7082 21.3022 18.6272 21.75 17.5 21.75C16.3728 21.75 15.2918 21.3022 14.4948 20.5052C13.6978 19.7082 13.25 18.6272 13.25 17.5ZM19.343 16.095C19.4835 16.2356 19.5623 16.4262 19.5623 16.625C19.5623 16.8238 19.4835 17.0144 19.343 17.155L17.063 19.435L15.657 18.03C15.657 17.4945 16.094 16.73 16.717 16.97L17.063 17.314L18.283 16.094C18.4236 15.9535 18.6142 15.8747 18.813 15.8747C19.0118 15.8747 19.2024 15.9545 19.343 16.095ZM6.25 7C6.25 6.80109 6.32902 6.61032 6.46967 6.46967C6.61032 6.32902 6.80109 6.25 7 6.25H13.5C13.6989 6.25 13.8897 6.32902 14.0303 6.46967C14.171 6.61032 14.25 6.80109 14.25 7C14.25 7.19891 14.171 7.38968 14.0303 7.53033C13.8897 7.67098 13.6989 7.75 13.5 7.75H7C6.80109 7.75 6.61032 7.67098 6.46967 7.53033C6.32902 7.38968 6.25 7.19891 6.25 7ZM6.25 10C6.25 9.80109 6.32902 9.61032 6.46967 9.46967C6.61032 9.32902 6.80109 9.25 7 9.25H15C15.1989 9.25 15.3897 9.32902 15.5303 9.46967C15.671 9.61032 15.75 9.80109 15.75 10C15.75 10.1989 15.671 10.3897 15.5303 10.5303C15.3897 10.671 15.1989 10.75 15 10.75H7C6.80109 10.75 6.61032 10.671 6.46967 10.5303C6.32902 10.3897 6.25 10.1989 6.25 10ZM6.25 13C6.25 12.8011 6.32902 12.6103 6.46967 12.4697C6.61032 12.329 6.80109 12.25 7 12.25H10.5C10.6989 12.25 10.8897 12.329 11.0303 12.4697C11.171 12.6103 11.25 12.8011 11.25 13C11.25 13.1989 11.171 13.3897 11.0303 13.5303C10.8897 13.671 10.6989 13.75 10.5 13.75H7C6.80109 13.75 6.61032 13.671 6.46967 13.5303C6.32902 13.3897 6.25 13.1989 6.25 13ZM6.25 16C6.25 15.8011 6.32902 15.6103 6.46967 15.4697C6.61032 15.329 6.80109 15.25 7 15.25H10.5C10.6989 15.25 10.8897 15.329 11.0303 15.4697C11.171 15.6103 11.25 15.8011 11.25 16C11.25 16.1989 11.171 16.3897 11.0303 16.5303C10.8897 16.671 10.6989 16.75 10.5 16.75H7C6.80109 16.75 6.61032 16.671 6.46967 16.5303C6.32902 16.3897 6.25 16.1989 6.25 16Z" fill="#00B536"/>
+                <path
+                  d="M3.25 5C3.25 4.27065 3.53973 3.57118 4.05546 3.05546C4.57118 2.53973 5.27065 2.25 6 2.25H16C16.7293 2.25 17.4288 2.53973 17.9445 3.05546C18.4603 3.57118 18.75 4.27065 18.75 5V10.5C18.75 10.6989 18.671 10.8897 18.5303 11.0303C18.3897 11.171 18.1989 11.25 18 11.25C17.8011 11.25 17.6103 11.171 17.4697 11.0303C17.329 10.8897 17.25 10.6989 17.25 10.5V5C17.25 4.31 16.69 3.75 16 3.75H6C5.31 3.75 4.75 4.31 4.75 5V19.382C4.74992 19.4247 4.76076 19.4667 4.78149 19.504C4.80223 19.5413 4.83216 19.5726 4.86845 19.5951C4.90474 19.6175 4.94617 19.6303 4.9888 19.6322C5.03144 19.6342 5.07385 19.6251 5.112 19.606L6.112 19.106C6.40259 18.9607 6.72787 18.8993 7.05143 18.9284C7.37498 18.9575 7.68404 19.0762 7.944 19.271L8.85 19.95C8.89327 19.9825 8.94591 20 9 20C9.05409 20 9.10673 19.9825 9.15 19.95L10.012 19.303C10.2903 19.0945 10.6244 18.9736 10.9718 18.9558C11.3191 18.9379 11.6638 19.024 11.962 19.203L12.636 19.607C12.7215 19.6572 12.7962 19.7238 12.8557 19.803C12.9153 19.8822 12.9586 19.9724 12.9831 20.0685C13.0076 20.1645 13.0128 20.2645 12.9984 20.3625C12.9841 20.4606 12.9504 20.5549 12.8994 20.6398C12.8484 20.7248 12.781 20.7988 12.7012 20.8576C12.6214 20.9164 12.5308 20.9588 12.4345 20.9824C12.3382 21.0059 12.2382 21.0101 12.1403 20.9948C12.0424 20.9794 11.9485 20.9449 11.864 20.893L11.191 20.489C11.1484 20.4633 11.0991 20.4509 11.0494 20.4534C10.9997 20.4559 10.9518 20.4732 10.912 20.503L10.05 21.15C9.74708 21.3772 9.37865 21.5 9 21.5C8.62135 21.5 8.25292 21.3772 7.95 21.15L7.044 20.47C7.00688 20.4424 6.96283 20.4256 6.91675 20.4216C6.87068 20.4175 6.82437 20.4263 6.783 20.447L5.783 20.947C5.5162 21.1435 5.2197 21.1435 4.92167 21.1302C4.62364 21.1168 4.33397 21.0275 4.08017 20.8707C3.82638 20.7139 3.61688 20.4948 3.47158 20.2343C3.32629 19.9737 3.25001 19.6803 3.25 19.382V5Z"
+                  fill="#00B536" />
+                <path
+                  d="M17.5 14.75C16.7707 14.75 16.0712 15.0397 15.5555 15.5555C15.0397 16.0712 14.75 16.7707 14.75 17.5C14.75 18.2293 15.0397 18.9288 15.5555 19.4445C16.0712 19.9603 16.7707 20.25 17.5 20.25C18.2293 20.25 18.9288 19.9603 19.4445 19.4445C19.9603 18.9288 20.25 18.2293 20.25 17.5C20.25 16.7707 19.9603 16.0712 19.4445 15.5555C18.9288 15.0397 18.2293 14.75 17.5 14.75ZM13.25 17.5C13.25 16.9419 13.3599 16.3892 13.5735 15.8736C13.7871 15.358 14.1001 14.8894 14.4948 14.4948C14.8894 14.1001 15.358 13.7871 15.8736 13.5735C16.3892 13.3599 16.9419 13.25 17.5 13.25C18.0581 13.25 18.6108 13.3599 19.1264 13.5735C19.642 13.7871 20.1106 14.1001 20.5052 14.4948C20.8999 14.8894 21.2129 15.358 21.4265 15.8736C21.6401 16.3892 21.75 16.9419 21.75 17.5C21.75 18.6272 21.3022 19.7082 20.5052 20.5052C19.7082 21.3022 18.6272 21.75 17.5 21.75C16.3728 21.75 15.2918 21.3022 14.4948 20.5052C13.6978 19.7082 13.25 18.6272 13.25 17.5ZM19.343 16.095C19.4835 16.2356 19.5623 16.4262 19.5623 16.625C19.5623 16.8238 19.4835 17.0144 19.343 17.155L17.063 19.435L15.657 18.03C15.657 17.4945 16.094 16.73 16.717 16.97L17.063 17.314L18.283 16.094C18.4236 15.9535 18.6142 15.8747 18.813 15.8747C19.0118 15.8747 19.2024 15.9545 19.343 16.095ZM6.25 7C6.25 6.80109 6.32902 6.61032 6.46967 6.46967C6.61032 6.32902 6.80109 6.25 7 6.25H13.5C13.6989 6.25 13.8897 6.32902 14.0303 6.46967C14.171 6.61032 14.25 6.80109 14.25 7C14.25 7.19891 14.171 7.38968 14.0303 7.53033C13.8897 7.67098 13.6989 7.75 13.5 7.75H7C6.80109 7.75 6.61032 7.67098 6.46967 7.53033C6.32902 7.38968 6.25 7.19891 6.25 7ZM6.25 10C6.25 9.80109 6.32902 9.61032 6.46967 9.46967C6.61032 9.32902 6.80109 9.25 7 9.25H15C15.1989 9.25 15.3897 9.32902 15.5303 9.46967C15.671 9.61032 15.75 9.80109 15.75 10C15.75 10.1989 15.671 10.3897 15.5303 10.5303C15.3897 10.671 15.1989 10.75 15 10.75H7C6.80109 10.75 6.61032 10.671 6.46967 10.5303C6.32902 10.3897 6.25 10.1989 6.25 10ZM6.25 13C6.25 12.8011 6.32902 12.6103 6.46967 12.4697C6.61032 12.329 6.80109 12.25 7 12.25H10.5C10.6989 12.25 10.8897 12.329 11.0303 12.4697C11.171 12.6103 11.25 12.8011 11.25 13C11.25 13.1989 11.171 13.3897 11.0303 13.5303C10.8897 13.671 10.6989 13.75 10.5 13.75H7C6.80109 13.75 6.61032 13.671 6.46967 13.5303C6.32902 13.3897 6.25 13.1989 6.25 13ZM6.25 16C6.25 15.8011 6.32902 15.6103 6.46967 15.4697C6.61032 15.329 6.80109 15.25 7 15.25H10.5C10.6989 15.25 10.8897 15.329 11.0303 15.4697C11.171 15.6103 11.25 15.8011 11.25 16C11.25 16.1989 11.171 16.3897 11.0303 16.5303C10.8897 16.671 10.6989 16.75 10.5 16.75H7C6.80109 16.75 6.61032 16.671 6.46967 16.5303C6.32902 16.3897 6.25 16.1989 6.25 16Z"
+                  fill="#00B536" />
               </svg>
             </div>
           </div>
-          <div class="col-sm-6 mb-3">
-            <div class="ct_fee_box orange_box">
+          <div class="col-sm-6">
+            <div class="ct_fee_box orange_box p-3 rounded-3" style="background:#FFF6EE;border:1px solid #FFDFC2;">
               <div>
-                <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Pending Invoices</p>
-                <h6 class="ct_fs_24 ct_fw_300 ct_text_primary">76772</h6>
+                <p class="ct_fs_14 ct_fw_600 text-muted mb-1">Pending Invoices</p>
+                <h6 class="ct_fs_24 ct_fw_700 mb-0" style="color: #FC800A;">{{ overview.pending_invoices }}</h6>
               </div>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z" fill="#FC800A"/>
-                <path d="M7 13.5C7.82843 13.5 8.5 12.8284 8.5 12C8.5 11.1716 7.82843 10.5 7 10.5C6.17157 10.5 5.5 11.1716 5.5 12C5.5 12.8284 6.17157 13.5 7 13.5Z" fill="#FC800A"/>
-                <path d="M12 13.5C12.8284 13.5 13.5 12.8284 13.5 12C13.5 11.1716 12.8284 10.5 12 10.5C11.1716 10.5 10.5 11.1716 10.5 12C10.5 12.8284 11.1716 13.5 12 13.5Z" fill="#FC800A"/>
-                <path d="M17 13.5C17.8284 13.5 18.5 12.8284 18.5 12C18.5 11.1716 17.8284 10.5 17 10.5C16.1716 10.5 15.5 11.1716 15.5 12C15.5 12.8284 16.1716 13.5 17 13.5Z" fill="#FC800A"/>
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z"
+                  fill="#FC800A" />
+                <path
+                  d="M7 13.5C7.82843 13.5 8.5 12.8284 8.5 12C8.5 11.1716 7.82843 10.5 7 10.5C6.17157 10.5 5.5 11.1716 5.5 12C5.5 12.8284 6.17157 13.5 7 13.5Z"
+                  fill="#FC800A" />
+                <path
+                  d="M12 13.5C12.8284 13.5 13.5 12.8284 13.5 12C13.5 11.1716 12.8284 10.5 12 10.5C11.1716 10.5 10.5 11.1716 10.5 12C10.5 12.8284 11.1716 13.5 12 13.5Z"
+                  fill="#FC800A" />
+                <path
+                  d="M17 13.5C17.8284 13.5 18.5 12.8284 18.5 12C18.5 11.1716 17.8284 10.5 17 10.5C16.1716 10.5 15.5 11.1716 15.5 12C15.5 12.8284 16.1716 13.5 17 13.5Z"
+                  fill="#FC800A" />
               </svg>
             </div>
           </div>
-          <div class="col-sm-6 mb-3">
-            <div class="ct_fee_box red_box">
+          <div class="col-sm-6">
+            <div class="ct_fee_box red_box p-3 rounded-3" style="background:#FFF1F1;border:1px solid #FFD4D4;">
               <div>
-                <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">Overdue Invoices</p>
-                <h6 class="ct_fs_24 ct_fw_300" style="color: #f03d3d;">76772</h6>
+                <p class="ct_fs_14 ct_fw_600 text-muted mb-1">Overdue Invoices</p>
+                <h6 class="ct_fs_24 ct_fw_700 mb-0" style="color: #f03d3d;">{{ overview.overdue_invoices }}</h6>
               </div>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21.75 12C21.75 10.0716 21.1782 8.18657 20.1068 6.58319C19.0355 4.97982 17.5127 3.73013 15.7312 2.99218C13.9496 2.25422 11.9892 2.06114 10.0979 2.43735C8.20656 2.81355 6.46928 3.74215 5.10571 5.10571C3.74215 6.46928 2.81355 8.20656 2.43735 10.0979C2.06114 11.9892 2.25422 13.9496 2.99218 15.7312C3.73013 17.5127 4.97982 19.0355 6.58319 20.1068C8.18657 21.1782 10.0716 21.75 12 21.75M12 6V12H6M17.25 14.25V17.25M21.75 17.25C21.75 18.4435 21.2759 19.5881 20.432 20.432C19.5881 21.2759 18.4435 21.75 17.25 21.75C16.0565 21.75 14.9119 21.2759 14.068 20.432C13.2241 19.5881 12.75 18.4435 12.75 17.25C12.75 16.0565 13.2241 14.9119 14.068 14.068C14.9119 13.2241 16.0565 12.75 17.25 12.75C18.4435 12.75 19.5881 13.2241 20.432 14.068C21.2759 14.9119 21.75 16.0565 21.75 17.25ZM17.25 19.125H17.2575V19.1325H17.25V19.125ZM17.625 19.125C17.625 19.2245 17.5855 19.3198 17.5152 19.3902C17.4448 19.4605 17.3495 19.5 17.25 19.5C17.1505 19.5 17.0552 19.4605 16.9848 19.3902C16.9145 19.3198 16.875 19.2245 16.875 19.125C16.875 19.0255 16.9145 18.9302 16.9848 18.8598C17.0552 18.7895 17.1505 18.75 17.25 18.75C17.3495 18.75 17.4448 18.7895 17.5152 18.8598C17.5855 18.9302 17.625 19.0255 17.625 19.125Z" stroke="#F13E3E" stroke-width="1.5"/>
+                <path
+                  d="M21.75 12C21.75 10.0716 21.1782 8.18657 20.1068 6.58319C19.0355 4.97982 17.5127 3.73013 15.7312 2.99218C13.9496 2.25422 11.9892 2.06114 10.0979 2.43735C8.20656 2.81355 6.46928 3.74215 5.10571 5.10571C3.74215 6.46928 2.81355 8.20656 2.43735 10.0979C2.06114 11.9892 2.25422 13.9496 2.99218 15.7312C3.73013 17.5127 4.97982 19.0355 6.58319 20.1068C8.18657 21.1782 10.0716 21.75 12 21.75M12 6V12H6M17.25 14.25V17.25M21.75 17.25C21.75 18.4435 21.2759 19.5881 20.432 20.432C19.5881 21.2759 18.4435 21.75 17.25 21.75C16.0565 21.75 14.9119 21.2759 14.068 20.432C13.2241 19.5881 12.75 18.4435 12.75 17.25C12.75 16.0565 13.2241 14.9119 14.068 14.068C14.9119 13.2241 16.0565 12.75 17.25 12.75C18.4435 12.75 19.5881 13.2241 20.432 14.068C21.2759 14.9119 21.75 16.0565 21.75 17.25ZM17.25 19.125H17.2575V19.1325H17.25V19.125ZM17.625 19.125C17.625 19.2245 17.5855 19.3198 17.5152 19.3902C17.4448 19.4605 17.3495 19.5 17.25 19.5C17.1505 19.5 17.0552 19.4605 16.9848 19.3902C16.9145 19.3198 16.875 19.2245 16.875 19.125C16.875 19.0255 16.9145 18.9302 16.9848 18.8598C17.0552 18.7895 17.1505 18.75 17.25 18.75C17.3495 18.75 17.4448 18.7895 17.5152 18.8598C17.5855 18.9302 17.625 19.0255 17.625 19.125Z"
+                  stroke="#F13E3E" stroke-width="1.5" />
               </svg>
             </div>
           </div>
@@ -79,121 +98,160 @@
     </div>
   </div>
 
-  <!-- Search and filter -->
-  <div class="d-flex justify-content-between align-items-center mt-3 ct_flex_col_575 gap-sm-5 gap-3">
+  <!-- Search and filter bar -->
+  <div class="d-flex justify-content-between align-items-center mt-3 ct_flex_col_575 gap-3 flex-wrap">
     <!-- Search -->
-    <div class="search-box w-100">
+    <div class="search-box flex-grow-1" style="min-width: 240px;">
       <div class="input-group position-relative">
-        <input type="text" class="form-control ct_input ps-5" placeholder="Search..." />
+        <input type="text" class="form-control ct_input ps-5"
+          placeholder="Search by student, parent, grade, invoice #..." [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange($event)" />
         <i class="fas fa-search ct_show_left ct_text_para"></i>
       </div>
     </div>
 
-    <!-- Filters -->
-    <div class="dropdown ct_w_100_575">
-      <button class="btn filter-dropdown dropdown-toggle ct_w_100_575" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <svg class="me-2" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12.5833 0.5H0.5L4.30145 5.25183C4.53787 5.54733 4.66667 5.9145 4.66667 6.293V11.75C4.66667 12.2102 5.03975 12.5833 5.5 12.5833H7.58333C8.04358 12.5833 8.41667 12.2102 8.41667 11.75V6.293C8.41667 5.9145 8.5455 5.54733 8.78192 5.25183L12.5833 0.5Z" stroke="#919EAB" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        All Status
-        <svg class="ms-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 9L12 15L6 9" stroke="#919EAB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="javascript:void(0)">All Status</a></li>
-        <li><a class="dropdown-item" href="javascript:void(0)">Pending</a></li>
-        <li><a class="dropdown-item" href="javascript:void(0)">Approved</a></li>
-        <li><a class="dropdown-item" href="javascript:void(0)">Rejected</a></li>
-      </ul>
+    <!-- Filters Group -->
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <!-- Grade Filter -->
+      <div class="dropdown">
+        <button class="btn filter-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false" style="min-width: 140px;">
+          <i class="fa-solid fa-graduation-cap me-2 text-muted"></i>
+          {{ selectedGrade }}
+          <svg class="ms-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 9L12 15L6 9" stroke="#919EAB" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="max-height: 280px; overflow-y: auto;">
+          <li *ngFor="let g of grades">
+            <a class="dropdown-item" href="javascript:void(0)" (click)="onGradeChange(g)"
+              [class.active]="selectedGrade === g">
+              {{ g }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="dropdown">
+        <button class="btn filter-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false" style="min-width: 140px;">
+          <svg class="me-2" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12.5833 0.5H0.5L4.30145 5.25183C4.53787 5.54733 4.66667 5.9145 4.66667 6.293V11.75C4.66667 12.2102 5.03975 12.5833 5.5 12.5833H7.58333C8.04358 12.5833 8.41667 12.2102 8.41667 11.75V6.293C8.41667 5.9145 8.5455 5.54733 8.78192 5.25183L12.5833 0.5Z"
+              stroke="#919EAB" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {{ selectedStatus }}
+          <svg class="ms-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 9L12 15L6 9" stroke="#919EAB" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="onStatusChange('All Status')"
+              [class.active]="selectedStatus === 'All Status'">All Status</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="onStatusChange('PENDING')"
+              [class.active]="selectedStatus === 'PENDING'">Pending</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="onStatusChange('PAID')"
+              [class.active]="selectedStatus === 'PAID'">Paid</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)" (click)="onStatusChange('OVERDUE')"
+              [class.active]="selectedStatus === 'OVERDUE'">Overdue</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border" role="status" style="color:#FC800A;"></div>
+    <p class="mt-2 text-muted ct_fs_14">Loading fee transactions...</p>
+  </div>
+
   <!-- Table -->
-  <div class="table-responsive mt-4 ct_custom_table">
-    <table class="table">
+  <div *ngIf="!isLoading" class="table-responsive mt-4 ct_custom_table bg-white p-3 ct_border_18 shadow-sm">
+    <table class="table align-middle mb-0">
       <thead>
         <tr>
           <th>S.No</th>
           <th>STUDENT NAME</th>
           <th>PARENT NAME</th>
           <th>GRADE</th>
-          <th>iNV MONTH</th>
+          <th>INV MONTH</th>
           <th>TOTAL</th>
           <th>DUE DATE</th>
-          <th>Status</th>
+          <th>STATUS</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td><span class="ct_text_dark">1</span></td>
-          <td>Sarah Jenkins</td>
-          <td>Mariam Suleiman</td>
-          <td>2nd</td>
-          <td>MAY</td>
+        <tr *ngFor="let txn of paginatedTransactions; let i = index">
+          <td><span class="ct_text_dark fw-semibold">{{ (currentPage - 1) * pageSize + i + 1 }}</span></td>
+          <td class="fw-bold text-dark">{{ txn.student_name || 'N/A' }}</td>
+          <td>{{ txn.parent_name || 'N/A' }}</td>
           <td>
-            <svg width="16" height="17" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.022 18.5L12.522 19.7M12.522 3V14.22C12.522 14.3719 12.5567 14.5218 12.6233 14.6583C12.6899 14.7948 12.7868 14.9143 12.9065 15.0078C13.0262 15.1013 13.1656 15.1663 13.3142 15.1979C13.4628 15.2295 13.6166 15.2268 13.764 15.19L18.022 14.2M1 18.351L6.549 16.988C6.98197 16.8699 7.36264 16.6097 7.62981 16.2491C7.89698 15.8885 8.03512 15.4486 8.022 15V1M18.022 9L2.022 12.5" stroke="#6e757c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            350
+            <span class="badge bg-light text-dark border px-2 py-1">{{ txn.grade || 'N/A' }}</span>
           </td>
-          <td>May 20, 2025</td>
+          <td>{{ txn.inv_month || 'N/A' }}</td>
+          <td class="fw-bold text-dark">{{ txn.formattedAmount || ('$' + (txn.total || 0).toFixed(2)) }}</td>
+          <td class="text-muted ct_fs_13">{{ txn.due_date || 'N/A' }}</td>
           <td>
-            <span class="mb-0 ct_pending_badge ct_custom_badge">pending</span>
-          </td>
-        </tr>
-        <tr>
-          <td><span class="ct_text_dark">2</span></td>
-          <td>Sarah Jenkins</td>
-          <td>Mariam Suleiman</td>
-          <td>2nd</td>
-          <td>MAY</td>
-          <td>
-            <svg width="16" height="17" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.022 18.5L12.522 19.7M12.522 3V14.22C12.522 14.3719 12.5567 14.5218 12.6233 14.6583C12.6899 14.7948 12.7868 14.9143 12.9065 15.0078C13.0262 15.1013 13.1656 15.1663 13.3142 15.1979C13.4628 15.2295 13.6166 15.2268 13.764 15.19L18.022 14.2M1 18.351L6.549 16.988C6.98197 16.8699 7.36264 16.6097 7.62981 16.2491C7.89698 15.8885 8.03512 15.4486 8.022 15V1M18.022 9L2.022 12.5" stroke="#6e757c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            350
-          </td>
-          <td>May 20, 2025</td>
-          <td>
-            <span class="mb-0 ct_rejected_badge ct_custom_badge">OVER DUE</span>
+            <span class="mb-0 ct_custom_badge text-uppercase fw-semibold" [ngClass]="{
+                'ct_pending_badge': (txn.status || '').toLowerCase() === 'pending',
+                'ct_approved_badge': (txn.status || '').toLowerCase() === 'paid',
+                'ct_rejected_badge': (txn.status || '').toLowerCase().includes('over') || (txn.status || '').toLowerCase() === 'overdue'
+              }">
+              {{ txn.status }}
+            </span>
           </td>
         </tr>
-        <tr>
-          <td><span class="ct_text_dark">3</span></td>
-          <td>Sarah Jenkins</td>
-          <td>Mariam Suleiman</td>
-          <td>2nd</td>
-          <td>MAY</td>
-          <td>
-            <svg width="16" height="17" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.022 18.5L12.522 19.7M12.522 3V14.22C12.522 14.3719 12.5567 14.5218 12.6233 14.6583C12.6899 14.7948 12.7868 14.9143 12.9065 15.0078C13.0262 15.1013 13.1656 15.1663 13.3142 15.1979C13.4628 15.2295 13.6166 15.2268 13.764 15.19L18.022 14.2M1 18.351L6.549 16.988C6.98197 16.8699 7.36264 16.6097 7.62981 16.2491C7.89698 15.8885 8.03512 15.4486 8.022 15V1M18.022 9L2.022 12.5" stroke="#6e757c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            350
-          </td>
-          <td>May 20, 2025</td>
-          <td>
-            <span class="mb-0 ct_approved_badge ct_custom_badge">paid</span>
-          </td>
-        </tr>
-        <tr>
-          <td><span class="ct_text_dark">4</span></td>
-          <td>Sarah Jenkins</td>
-          <td>Mariam Suleiman</td>
-          <td>2nd</td>
-          <td>MAY</td>
-          <td>
-            <svg width="16" height="17" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.022 18.5L12.522 19.7M12.522 3V14.22C12.522 14.3719 12.5567 14.5218 12.6233 14.6583C12.6899 14.7948 12.7868 14.9143 12.9065 15.0078C13.0262 15.1013 13.1656 15.1663 13.3142 15.1979C13.4628 15.2295 13.6166 15.2268 13.764 15.19L18.022 14.2M1 18.351L6.549 16.988C6.98197 16.8699 7.36264 16.6097 7.62981 16.2491C7.89698 15.8885 8.03512 15.4486 8.022 15V1M18.022 9L2.022 12.5" stroke="#6e757c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            350
-          </td>
-          <td>May 20, 2025</td>
-          <td>
-            <span class="mb-0 ct_pending_badge ct_custom_badge">pending</span>
+        <tr *ngIf="filteredTransactions.length === 0">
+          <td colspan="8" class="text-center py-5 text-muted">
+            <i class="fa-solid fa-receipt fs-1 mb-2 d-block opacity-50"></i>
+            No fee payment records found matching your filters.
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Pagination Footer -->
+    <div *ngIf="filteredTransactions.length > 0"
+      class="d-flex justify-content-between align-items-center flex-wrap gap-3 pt-3 mt-2 border-top px-2">
+      <!-- Showing Entries Info -->
+      <div class="d-flex align-items-center gap-3">
+        <span class="ct_fs_13 text-muted">
+          Showing <strong>{{ startIndex }}</strong> to <strong>{{ endIndex }}</strong> of <strong>{{
+            filteredTransactions.length }}</strong> invoices
+        </span>
+        <div class="d-flex align-items-center gap-2">
+          <label class="ct_fs_12 text-muted text-nowrap">Rows per page:</label>
+          <select class="form-select ct_input ct_fs_12 py-1 px-2" style="width: auto; height: 32px; border-radius: 6px;"
+            [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let opt of pageSizeOptions" [value]="opt">{{ opt }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Pagination Buttons -->
+      <nav aria-label="Fee payments pagination" *ngIf="totalPages > 1">
+        <ul class="pagination pagination-sm mb-0 gap-1">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link rounded-2 px-3 py-1" (click)="setPage(currentPage - 1)"
+              [disabled]="currentPage === 1">
+              <i class="fa-solid fa-chevron-left ct_fs_11 me-1"></i> Prev
+            </button>
+          </li>
+          <li *ngFor="let p of pagesArray" class="page-item" [class.active]="currentPage === p">
+            <button class="page-link rounded-2 px-3 py-1" (click)="setPage(p)">{{ p }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link rounded-2 px-3 py-1" (click)="setPage(currentPage + 1)"
+              [disabled]="currentPage === totalPages">
+              Next <i class="fa-solid fa-chevron-right ct_fs_11 ms-1"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
   </div>
 </div>

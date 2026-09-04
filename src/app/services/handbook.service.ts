@@ -15,7 +15,7 @@ export interface Handbook {
   providedIn: 'root'
 })
 export class HandbookService {
-  private apiUrl = environment.apiUrl + 'handbooks/admin';
+  private apiUrl = environment.apiUrl + 'admin/handbooks';
 
   constructor(private http: HttpClient) { }
 

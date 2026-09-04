@@ -1,0 +1,116 @@
+<div class="ct_dashbaord_middle mt-4 mb-5 ct_px_28">
+
+  <!-- Page Header -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+      <h4 class="ct_fs_24 ct_fw_700 mb-1">Academic Dates &amp; Session</h4>
+      <p class="ct_fs_16 ct_fw_400 ct_text_para mb-0">
+        Manage all key academic dates displayed across the main platform. Update any date and click Save All Dates to apply changes.
+      </p>
+      <small *ngIf="lastUpdatedAt" class="text-muted ct_fs_12 d-block mt-1">
+        <i class="fa-regular fa-clock me-1 text-warning"></i>Last saved: {{ lastUpdatedAt | date:'medium' }}
+      </small>
+    </div>
+    <button type="button" (click)="saveAll()" [disabled]="isSaving"
+      class="ct_gradient_btn text-nowrap px-4 py-2 d-flex align-items-center justify-content-center gap-2 border-0 shadow-sm"
+      style="border-radius: 8px; height: 48px; font-weight: 600; min-width: 170px;">
+      <span *ngIf="isSaving" class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
+      <i *ngIf="!isSaving" class="fa-solid fa-floppy-disk text-white fs-6"></i>
+      <span class="text-white fw-bold">{{ isSaving ? 'Saving...' : 'Save All Dates' }}</span>
+    </button>
+  </div>
+
+  <!-- Toast Notification -->
+  <div *ngIf="showSuccessToast"
+    class="alert d-flex align-items-center gap-3 mb-4 py-3 px-4 border-0 shadow-sm"
+    [style.background-color]="isErrorToast ? '#FEF2F2' : '#ECFDF5'"
+    [style.color]="isErrorToast ? '#991B1B' : '#065F46'"
+    [style.border-left]="isErrorToast ? '4px solid #EF4444 !important' : '4px solid #10B981 !important'"
+    style="border-radius: 14px;">
+    <i class="fa-solid fs-5" [ngClass]="isErrorToast ? 'fa-circle-xmark text-danger' : 'fa-circle-check text-success'"></i>
+    <span class="fw-semibold ct_fs_15">{{ toastMessage }}</span>
+  </div>
+
+  <!-- Info Banner -->
+  <div class="mb-4 p-3 px-4 rounded-3 d-flex align-items-center gap-3"
+    style="background: #FFF7ED; border-left: 4px solid #FC800A;">
+    <i class="fa-solid fa-circle-info fs-5 flex-shrink-0" style="color: #FC800A;"></i>
+    <p class="mb-0 ct_fs_14" style="color: #9A3412;">
+      Update the dates below and click <strong>Save All Dates</strong> — changes will be automatically reflected across the main platform.
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border" role="status" style="color:#FC800A;width:40px;height:40px;"></div>
+    <p class="mt-3 ct_text_para ct_fs_14">Loading academic dates...</p>
+  </div>
+
+  <!-- Grouped By Page -->
+  <div *ngIf="!isLoading">
+    <div *ngFor="let group of groupedPages" class="bg-white shadow-sm mb-4" style="border-radius: 16px; overflow: hidden; border: 1px solid #F0EDE8;">
+
+      <!-- Group Header -->
+      <div class="d-flex align-items-center gap-3 px-4 py-3"
+        style="background-color: #F8F5EE; border-bottom: 1px solid #EFE8DC;">
+        <div class="p-2 rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
+          style="background-color: rgba(252,128,10,0.1); width: 36px; height: 36px;">
+          <i class="fa-solid fa-file-lines ct_fs_14" style="color: #FC800A;"></i>
+        </div>
+        <div>
+          <div class="fw-bold ct_fs_16 text-dark">{{ group.pageName }}</div>
+          <small class="text-muted ct_fs_13">
+            Target Context:
+            <code class="px-2 py-1 rounded-2" style="background-color: #F0F0F0; font-size: 12px; color: #444;">{{ group.pageRoute }}</code>
+          </small>
+        </div>
+      </div>
+
+      <!-- Date Fields -->
+      <div class="px-4 py-2">
+        <div *ngFor="let item of group.items; let last = last" class="py-3"
+          [style.border-bottom]="!last ? '1px solid #F5F0EB' : 'none'">
+
+          <div class="row align-items-center g-3">
+            <!-- Label + Description -->
+            <div class="col-lg-6">
+              <div class="d-flex align-items-start gap-3">
+                <div class="flex-shrink-0 rounded-circle d-flex align-items-center justify-content-center"
+                  style="background-color: #FFF2E6; width: 38px; height: 38px; min-width: 38px;">
+                  <i class="fa-solid {{ item.icon }} ct_fs_14" style="color: #FC800A;"></i>
+                </div>
+                <div>
+                  <div class="fw-semibold ct_fs_15 text-dark mb-1">{{ item.label }}</div>
+                  <small class="ct_text_para ct_fs_13">{{ item.description }}</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Date Input -->
+            <div class="col-lg-6">
+              <input type="text" [(ngModel)]="item.value" [name]="item.key"
+                class="form-control ct_input ct_fs_14 fw-semibold"
+                style="border: 1.5px solid #EFE8DC; background-color: #FDFBF8; padding: 11px 16px; color: #171E45;"
+                placeholder="e.g. September 10, 2025"
+                [style.border-color]="item.value ? '#FC800A' : '#EFE8DC'"
+              />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Save Button -->
+  <div class="d-flex justify-content-end mt-2 mb-4" *ngIf="!isLoading">
+    <button type="button" (click)="saveAll()" [disabled]="isSaving"
+      class="ct_gradient_btn text-nowrap px-5 py-2 d-flex align-items-center justify-content-center gap-2 border-0 shadow-sm"
+      style="border-radius: 8px; height: 48px; font-weight: 600;">
+      <span *ngIf="isSaving" class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span>
+      <i *ngIf="!isSaving" class="fa-solid fa-floppy-disk text-white fs-6"></i>
+      <span class="text-white fw-bold">{{ isSaving ? 'Saving Dates...' : 'Save All Dates' }}</span>
+    </button>
+  </div>
+
+</div>

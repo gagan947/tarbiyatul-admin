@@ -4,17 +4,17 @@
       <a routerLink="/teacher-enrollment" class="ct_text_primary"><i class="fa-solid fa-chevron-left"></i></a>
       Teacher Enrollment Details
     </h3>
-    <div *ngIf="teacherDetail?.data?.teacher as teacher">
+    <div *ngIf="teacherDetail as teacher">
       <span class="mb-0 ct_custom_badge text-uppercase"
-        [class.ct_pending_badge]="teacher.approvalStatus?.toLowerCase() === 'pending'"
-        [class.ct_approved_badge]="teacher.approvalStatus?.toLowerCase() === 'active' || teacher.approvalStatus?.toLowerCase() === 'approved'"
-        [class.ct_rejected_badge]="teacher.approvalStatus?.toLowerCase() === 'inactive'">
-        {{ (teacher.approvalStatus?.toLowerCase() === 'active' ? 'APPROVED' : teacher.approvalStatus) || 'PENDING' }}
+        [class.ct_pending_badge]="(teacher.approvalStatus || teacher.status)?.toLowerCase() === 'pending'"
+        [class.ct_approved_badge]="(teacher.approvalStatus || teacher.status)?.toLowerCase() === 'active' || (teacher.approvalStatus || teacher.status)?.toLowerCase() === 'approved'"
+        [class.ct_rejected_badge]="(teacher.approvalStatus || teacher.status)?.toLowerCase() === 'inactive' || (teacher.approvalStatus || teacher.status)?.toLowerCase() === 'rejected'">
+        {{ ((teacher.approvalStatus || teacher.status)?.toLowerCase() === 'active' ? 'APPROVED' : (teacher.approvalStatus || teacher.status)) || 'PENDING' }}
       </span>
     </div>
   </div>
 
-  <ng-container *ngIf="teacherDetail?.data?.teacher as teacher">
+  <ng-container *ngIf="teacherDetail as teacher">
     <div class="ct_mt_50 bg-white ct_border_10 ct_box_shadow_25 ct_p_30 ct_576_p_20">
       <h3 class="ct_fw_300 ct_fs_18 mb-4">Teacher Information</h3>
       <div class="row">
@@ -65,8 +65,8 @@
         </div>
         <div class="col-md-6 mb-4">
           <div>
-            <p class="ct_fs_13 ct_fw_600 ct_text_para mb-2 opacity-75">JOINED ON</p>
-            <h4 class="ct_fs_16 ct_fw_300 mb-0">{{ (teacher.createdAt | date:'longDate') || 'N/A' }}</h4>
+            <p class="ct_fs_13 ct_fw_600 ct_text_para mb-2 opacity-75">JOINED / APPLIED ON</p>
+            <h4 class="ct_fs_16 ct_fw_300 mb-0">{{ (teacher.appliedDate || teacher.createdAt | date:'longDate') || 'N/A' }}</h4>
             <div class="custom_divider mt-3"></div>
           </div>
         </div>
@@ -89,7 +89,7 @@
         <div class="col-md-6 mb-4">
           <div>
             <p class="ct_fs_13 ct_fw_600 ct_text_para mb-2 opacity-75">TEACHING EXPERIENCE</p>
-            <h4 class="ct_fs_16 ct_fw_300 mb-0">{{ teacher.experienceYears || teacher.teacherProfile?.experienceYearsFormatted || (teacher.teacherProfile?.experienceYears ? teacher.teacherProfile?.experienceYears + ' Years' : 'N/A') }}</h4>
+            <h4 class="ct_fs_16 ct_fw_300 mb-0">{{ (teacher.yearsOfExperience ? teacher.yearsOfExperience + ' Years' : '') || (teacher.teacherProfile?.experienceYears ? teacher.teacherProfile?.experienceYears + ' Years' : '') || (teacher.experienceYears ? teacher.experienceYears + ' Years' : 'N/A') }}</h4>
             <div class="custom_divider mt-3"></div>
           </div>
         </div>
@@ -100,11 +100,23 @@
             <div class="custom_divider mt-3"></div>
           </div>
         </div>
+        <!-- Resume / CV (Hidden for now) -->
+        <!-- <div class="col-md-6 mb-4" *ngIf="teacher.resumeUrl || teacher.teacherProfile?.resumeUrl">
+          <div>
+            <p class="ct_fs_13 ct_fw_600 ct_text_para mb-2 opacity-75">RESUME / CV</p>
+            <a [href]="getResumeUrl(teacher.resumeUrl || teacher.teacherProfile?.resumeUrl)" target="_blank"
+               class="btn btn-sm text-white fw-semibold d-inline-flex align-items-center gap-2 px-3 py-2"
+               style="background:linear-gradient(135deg,#0267EB,#0251C4);border-radius:8px;text-decoration:none;">
+              <i class="fa-solid fa-file-pdf"></i> View / Download Resume
+            </a>
+            <div class="custom_divider mt-3"></div>
+          </div>
+        </div> -->
       </div>
 
-      <div class="d-flex justify-content-end gap-3 ct_mt_45" *ngIf="teacher.approvalStatus?.toLowerCase() === 'pending'">
-        <button class="rejected-btn">Reject</button>
-        <button class="approved-btn">Approve</button>
+      <div class="d-flex justify-content-end gap-3 ct_mt_45" *ngIf="(teacher.approvalStatus || teacher.status)?.toLowerCase() === 'pending'">
+        <button class="rejected-btn" (click)="rejectTeacher()">Reject</button>
+        <button class="approved-btn" (click)="approveTeacher()">Approve</button>
       </div>
     </div>
   </ng-container>
@@ -117,7 +129,40 @@
   </div>
 
   <!-- Error State -->
-  <div *ngIf="error" class="alert alert-danger mt-4" role="alert">
+  <div *ngIf="error && !isLoading" class="alert alert-danger mt-4" role="alert">
     {{ error }}
   </div>
+
+  <!-- Custom Confirm Modal -->
+  <div *ngIf="showConfirmModal" class="ct_modal_overlay">
+    <div class="ct_modal_box">
+      <div class="ct_modal_icon_wrapper" [class.ct_modal_icon_approve]="confirmType === 'approve'"
+        [class.ct_modal_icon_reject]="confirmType === 'reject'"
+        [class.ct_modal_icon_confirm]="confirmType === 'confirm'">
+        <i class="fa-solid" [class.fa-check]="confirmType === 'approve'" [class.fa-xmark]="confirmType === 'reject'"
+          [class.fa-question]="confirmType === 'confirm'"></i>
+      </div>
+      <h3 class="ct_modal_title">{{ confirmTitle }}</h3>
+      <p class="ct_modal_message">{{ confirmMessage }}</p>
+      <div class="ct_modal_actions">
+        <button class="ct_modal_btn ct_modal_btn_cancel" (click)="closeConfirmModal()">Cancel</button>
+        <button class="ct_modal_btn" [class.ct_modal_btn_approve]="confirmType === 'approve'"
+          [class.ct_modal_btn_reject]="confirmType === 'reject'"
+          [class.ct_modal_btn_confirm]="confirmType === 'confirm'" (click)="onConfirm()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Toast Notification -->
+  <div *ngIf="showToastMessage" class="ct_toast_container">
+    <div class="ct_toast" [class.ct_toast_success]="toastType === 'success'"
+      [class.ct_toast_error]="toastType === 'error'" [class.ct_toast_info]="toastType === 'info'">
+      <span class="ct_toast_icon">
+        <i class="fa-solid" [class.fa-circle-check]="toastType === 'success'"
+          [class.fa-circle-xmark]="toastType === 'error'" [class.fa-circle-info]="toastType === 'info'"></i>
+      </span>
+      <p class="ct_toast_message">{{ toastMessage }}</p>
+    </div>
+  </div>
 </div>
+

@@ -1,0 +1,319 @@
+<div class="ct_dashbaord_middle mt-4 mb-5 ct_px_28">
+
+  <!-- Toast Notification -->
+  <div *ngIf="showToastMessage" class="position-fixed d-flex align-items-center gap-3 px-4 py-3 shadow-lg bg-white"
+    style="top:24px; right:24px; z-index:99999; border-radius:14px; min-width:320px; border-left:5px solid;"
+    [style.border-left-color]="toastType==='success'?'#00B536':toastType==='error'?'#F13E3E':'#0267EB'">
+    <i class="fa-solid fa-circle-check fs-5"
+      [style.color]="toastType==='success'?'#00B536':toastType==='error'?'#F13E3E':'#0267EB'"></i>
+    <span class="fw-semibold ct_fs_14 text-dark">{{ toastMessage }}</span>
+  </div>
+
+  <!-- Page Header -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+      <h4 class="ct_fs_24 ct_fw_700 mb-1 text-dark">Tutoring &amp; Adult Education Enrollments</h4>
+      <p class="ct_fs_15 ct_text_para mb-0">Review, manage, and approve 1-on-1 private tutoring and adult learning
+        applications.</p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-sm-6">
+      <div class="p-4 h-100 position-relative overflow-hidden"
+        style="background:linear-gradient(135deg,#0267EB,#0251C4);border-radius:18px;box-shadow:0 6px 20px rgba(2,103,235,0.25);">
+        <div class="position-absolute"
+          style="top:-15px;right:-15px;width:80px;height:80px;background:rgba(255,255,255,0.08);border-radius:50%;">
+        </div>
+        <p class="text-white mb-1 ct_fs_12 fw-semibold" style="opacity:.8;letter-spacing:.5px;">TOTAL APPLICATIONS</p>
+        <h2 class="text-white ct_fw_700 mb-1" style="font-size:38px;line-height:1;">{{ totalEnrollments | number }}</h2>
+        <small class="text-white" style="opacity:.7;font-size:12px;"><i class="fa-solid fa-users me-1"></i>All tutoring
+          signups</small>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="p-4 h-100 position-relative overflow-hidden"
+        style="background:linear-gradient(135deg,#FC800A,#E56B00);border-radius:18px;box-shadow:0 6px 20px rgba(252,128,10,0.25);">
+        <div class="position-absolute"
+          style="top:-15px;right:-15px;width:80px;height:80px;background:rgba(255,255,255,0.08);border-radius:50%;">
+        </div>
+        <p class="text-white mb-1 ct_fs_12 fw-semibold" style="opacity:.8;letter-spacing:.5px;">PENDING REVIEW</p>
+        <h2 class="text-white ct_fw_700 mb-1" style="font-size:38px;line-height:1;">{{ pendingCount | number }}</h2>
+        <small class="text-white" style="opacity:.7;font-size:12px;"><i
+            class="fa-solid fa-hourglass-half me-1"></i>Awaiting decision</small>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="p-4 h-100 position-relative overflow-hidden"
+        style="background:linear-gradient(135deg,#00B536,#00932C);border-radius:18px;box-shadow:0 6px 20px rgba(0,181,54,0.25);">
+        <div class="position-absolute"
+          style="top:-15px;right:-15px;width:80px;height:80px;background:rgba(255,255,255,0.08);border-radius:50%;">
+        </div>
+        <p class="text-white mb-1 ct_fs_12 fw-semibold" style="opacity:.8;letter-spacing:.5px;">APPROVED &amp; ACTIVE
+        </p>
+        <h2 class="text-white ct_fw_700 mb-1" style="font-size:38px;line-height:1;">{{ approvedCount | number }}</h2>
+        <small class="text-white" style="opacity:.7;font-size:12px;"><i
+            class="fa-solid fa-circle-check me-1"></i>Currently active</small>
+      </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="p-4 h-100 position-relative overflow-hidden"
+        style="background:linear-gradient(135deg,#F13E3E,#CC2828);border-radius:18px;box-shadow:0 6px 20px rgba(241,62,62,0.25);">
+        <div class="position-absolute"
+          style="top:-15px;right:-15px;width:80px;height:80px;background:rgba(255,255,255,0.08);border-radius:50%;">
+        </div>
+        <p class="text-white mb-1 ct_fs_12 fw-semibold" style="opacity:.8;letter-spacing:.5px;">REJECTED</p>
+        <h2 class="text-white ct_fw_700 mb-1" style="font-size:38px;line-height:1;">{{ rejectedCount | number }}</h2>
+        <small class="text-white" style="opacity:.7;font-size:12px;"><i
+            class="fa-solid fa-circle-xmark me-1"></i>Applications declined</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter -->
+  <div class="bg-white d-flex align-items-center gap-3 flex-wrap mb-4 p-3"
+    style="border-radius:14px;border:1px solid #F0F0F0;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <div class="flex-grow-1 position-relative" style="min-width:200px;">
+      <i class="fa-solid fa-magnifying-glass position-absolute ct_fs_14 text-muted"
+        style="top:50%;left:14px;transform:translateY(-50%);"></i>
+      <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
+        class="form-control ct_input ps-5"
+        style="border-radius:10px;border:1.5px solid #EAEAEA;background:#FAFAFA;height:44px;"
+        placeholder="Search by learner name, guardian, email or subject..." />
+    </div>
+    <select [(ngModel)]="selectedStatus" (ngModelChange)="changeStatusFilter($event)"
+      class="form-select ct_input ct_fs_14 fw-semibold"
+      style="max-width:180px;border-radius:10px;border:1.5px solid #EAEAEA;background:#FAFAFA;height:44px;">
+      <option value="All Status">All Status</option>
+      <option value="PENDING">Pending</option>
+      <option value="ACTIVE">Approved / Active</option>
+      <option value="REJECTED">Rejected</option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border" role="status" style="color:#FC800A;width:40px;height:40px;"></div>
+    <p class="mt-3 ct_text_para ct_fs_14">Loading enrollments...</p>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading" class="bg-white shadow-sm"
+    style="border-radius:18px;border:1px solid #F0EDE8;overflow:hidden;">
+
+    <!-- Empty State -->
+    <div *ngIf="tutoringList.length === 0" class="text-center py-5 px-4">
+      <div style="font-size:52px;opacity:.3;">🎓</div>
+      <h5 class="ct_fw_600 text-dark mb-1 mt-2">No Enrollments Found</h5>
+      <p class="ct_text_para ct_fs_14">No tutoring enrollments match your current search or filter.</p>
+    </div>
+
+    <div *ngIf="tutoringList.length > 0" class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr style="background:#FAFAFA;border-bottom:2px solid #F0EDE8;">
+            <th class="ct_fs_12 fw-bold text-muted px-4 py-3" style="letter-spacing:.5px;">#</th>
+            <th class="ct_fs_12 fw-bold text-muted py-3" style="letter-spacing:.5px;">LEARNER</th>
+            <th class="ct_fs_12 fw-bold text-muted py-3" style="letter-spacing:.5px;">GUARDIAN / CONTACT</th>
+            <th class="ct_fs_12 fw-bold text-muted py-3" style="letter-spacing:.5px;">SUBJECT</th>
+            <th class="ct_fs_12 fw-bold text-muted py-3" style="letter-spacing:.5px;">STATUS</th>
+            <th class="ct_fs_12 fw-bold text-muted py-3 pe-4 text-end" style="letter-spacing:.5px;">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of paginatedTutoringList; let i = index"
+            style="border-bottom:1px solid #F8F5F0;transition:background .15s ease;"
+            onmouseover="this.style.background='#FFFAF7'" onmouseout="this.style.background='transparent'">
+
+            <!-- Number -->
+            <td class="px-4 py-3">
+              <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white ct_fs_13"
+                style="width:34px;height:34px;background:linear-gradient(135deg,#FC800A,#E56B00);box-shadow:0 3px 8px rgba(252,128,10,0.3);flex-shrink:0;">
+                {{ (currentPage - 1) * pageSize + i + 1 }}
+              </div>
+            </td>
+
+            <!-- Learner -->
+            <td class="py-3">
+              <div class="fw-bold ct_fs_14 text-dark">{{ item.learner?.name || item.learnerName || 'N/A' }}</div>
+              <div class="ct_fs_12 text-muted mb-1" *ngIf="item.learner?.email || item.learnerEmail">
+                <i class="fa-solid fa-envelope me-1" style="color:#0267EB;font-size:10px;"></i>{{ item.learner?.email ||
+                item.learnerEmail }}
+              </div>
+              <div class="d-flex align-items-center gap-2 flex-wrap"
+                *ngIf="item.learner?.grade || item.learner?.gradeLevel || item.gradeLevel">
+                <span class="badge bg-light text-dark border ct_fs_11">{{ item.learner?.grade ||
+                  item.learner?.gradeLevel || item.gradeLevel }}</span>
+              </div>
+              <small class="text-muted ct_fs_12 d-block mt-1"
+                *ngIf="item.formatted_date || item.date || item.learner?.formatted_date || item.createdAt">
+                <i class="fa-regular fa-calendar me-1"></i>{{ item.formatted_date || item.learner?.formatted_date ||
+                item.date || (item.createdAt | date:'mediumDate') }}
+              </small>
+            </td>
+
+            <!-- Guardian / Contact -->
+            <td class="py-3">
+              <div class="fw-semibold ct_fs_13 text-dark mb-1">{{ item.guardian?.name || item.guardianName ||
+                item.learner?.name || 'N/A' }}</div>
+              <div class="text-muted ct_fs_12 mb-1" *ngIf="item.guardian?.email || item.email">
+                <i class="fa-solid fa-envelope me-1" style="color:#FC800A;font-size:10px;"></i>{{ item.guardian?.email
+                || item.email }}
+              </div>
+              <div class="text-muted ct_fs_12" *ngIf="item.guardian?.phone || (item.phone && item.phone !== 'N/A')">
+                <i class="fa-solid fa-phone me-1" style="color:#FC800A;font-size:10px;"></i>{{ item.guardian?.phone ||
+                item.phone }}
+              </div>
+              <div class="text-muted ct_fs_12 fst-italic"
+                *ngIf="!item.guardian?.phone && (!item.phone || item.phone === 'N/A')">
+                <i class="fa-solid fa-phone-slash me-1 text-muted" style="font-size:10px;"></i>No phone provided
+              </div>
+            </td>
+
+            <!-- Subject / Academy -->
+            <td class="py-3">
+              <span class="d-inline-block ct_fs_12 fw-semibold px-3 py-2"
+                style="background:linear-gradient(135deg,rgba(252,128,10,0.1),rgba(252,128,10,0.05));color:#C85E00;border:1px solid rgba(252,128,10,0.25);border-radius:8px;white-space:normal;line-height:1.3;">
+                {{ item.subject || item.academy || 'Global Academy' }}
+              </span>
+              <div class="mt-1" *ngIf="item.academy && item.subject !== item.academy">
+                <small class="text-muted ct_fs_11"><i class="fa-solid fa-school me-1"></i>{{ item.academy }}</small>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="py-3">
+              <span class="ct_fs_12 fw-bold px-3 py-2 d-inline-block" style="border-radius:8px;white-space:nowrap;"
+                [style.background]="((item.status || '').toUpperCase()==='PENDING')?'#FFF3CD':(((item.status || '').toUpperCase()==='APPROVED'||(item.status || '').toUpperCase()==='ACTIVE')?'#D1FAE5':'#FFE4E4')"
+                [style.color]="((item.status || '').toUpperCase()==='PENDING')?'#92600A':(((item.status || '').toUpperCase()==='APPROVED'||(item.status || '').toUpperCase()==='ACTIVE')?'#065F46':'#991B1B')">
+                <i class="fa-solid me-1" style="font-size:10px;"
+                  [ngClass]="((item.status || '').toUpperCase()==='PENDING')?'fa-hourglass-half':(((item.status || '').toUpperCase()==='APPROVED'||(item.status || '').toUpperCase()==='ACTIVE')?'fa-circle-check':'fa-circle-xmark')"></i>
+                {{ item.status | uppercase }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="py-3 pe-4 text-end">
+              <div class="d-flex justify-content-end align-items-center gap-2">
+                <!-- View Details -->
+                <a [routerLink]="['/tutoring-enrollment-detail']" [queryParams]="{ id: item.numericId || item.id }"
+                  class="btn btn-sm fw-semibold px-3 py-1 d-inline-flex align-items-center gap-1"
+                  style="background:#F0F4F8;color:#0267EB;border:1px solid #D5E1ED;border-radius:8px;font-size:12px;"
+                  title="View Full Application Details">
+                  <i class="fa-solid fa-eye" style="font-size:11px;"></i>
+                  <span>View</span>
+                </a>
+
+                <!-- Pending Actions -->
+                <ng-container *ngIf="(item.status || '').toUpperCase() === 'PENDING'">
+                  <button class="btn btn-sm fw-semibold px-3 py-1 d-inline-flex align-items-center gap-1"
+                    style="background:linear-gradient(135deg,#00B536,#00932C);color:#fff;border:none;border-radius:8px;box-shadow:0 3px 8px rgba(0,181,54,0.25);font-size:12px;white-space:nowrap;"
+                    [disabled]="isActionLoading && actionLoadingId === (item.numericId || item.id)"
+                    (click)="approveEnrollment(item.numericId || item.id)">
+                    <span class="spinner-border spinner-border-sm" style="width:12px;height:12px;"
+                      *ngIf="isActionLoading && actionLoadingId === (item.numericId || item.id)"></span>
+                    <i class="fas fa-check" style="font-size:11px;"
+                      *ngIf="!(isActionLoading && actionLoadingId === (item.numericId || item.id))"></i> Approve
+                  </button>
+                  <button class="btn btn-sm fw-semibold px-3 py-1 d-inline-flex align-items-center gap-1"
+                    style="background:#fff;color:#F13E3E;border:1.5px solid #F13E3E;border-radius:8px;font-size:12px;white-space:nowrap;"
+                    [disabled]="isActionLoading && actionLoadingId === (item.numericId || item.id)"
+                    (click)="rejectEnrollment(item.numericId || item.id)">
+                    <span class="spinner-border spinner-border-sm" style="width:12px;height:12px;"
+                      *ngIf="isActionLoading && actionLoadingId === (item.numericId || item.id)"></span>
+                    <i class="fas fa-times" style="font-size:11px;"
+                      *ngIf="!(isActionLoading && actionLoadingId === (item.numericId || item.id))"></i> Reject
+                  </button>
+                </ng-container>
+
+                <!-- Non-Pending Badge -->
+                <span *ngIf="(item.status || '').toUpperCase() !== 'PENDING'"
+                  class="ct_fs_12 fw-semibold px-3 py-1 d-inline-flex align-items-center gap-1"
+                  style="background:#F5F5F5;color:#999;border-radius:8px;font-size:12px;white-space:nowrap;">
+                  <i class="fa-solid fa-check-double" style="font-size:10px;"></i> Processed
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div *ngIf="tutoringList.length > 0"
+      class="d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 border-top"
+      style="background:#FAFAFA;">
+      <!-- Showing Entries Info -->
+      <div class="d-flex align-items-center gap-3">
+        <span class="ct_fs_13 text-muted">
+          Showing <strong>{{ startIndex }}</strong> to <strong>{{ endIndex }}</strong> of <strong>{{ tutoringList.length
+            }}</strong> applications
+        </span>
+        <div class="d-flex align-items-center gap-2">
+          <label class="ct_fs_12 text-muted text-nowrap">Rows per page:</label>
+          <select class="form-select ct_input ct_fs_12 py-1 px-2" style="width: auto; height: 32px; border-radius: 6px;"
+            [ngModel]="pageSize" (ngModelChange)="onPageSizeChange($event)">
+            <option *ngFor="let opt of pageSizeOptions" [value]="opt">{{ opt }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Pagination Buttons -->
+      <nav aria-label="Tutoring pagination" *ngIf="totalPages > 1">
+        <ul class="pagination pagination-sm mb-0 gap-1">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link rounded-2 px-3 py-1" (click)="setPage(currentPage - 1)"
+              [disabled]="currentPage === 1">
+              <i class="fa-solid fa-chevron-left ct_fs_11 me-1"></i> Prev
+            </button>
+          </li>
+          <li *ngFor="let p of pagesArray" class="page-item" [class.active]="currentPage === p">
+            <button class="page-link rounded-2 px-3 py-1" (click)="setPage(p)">{{ p }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link rounded-2 px-3 py-1" (click)="setPage(currentPage + 1)"
+              [disabled]="currentPage === totalPages">
+              Next <i class="fa-solid fa-chevron-right ct_fs_11 ms-1"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div *ngIf="showConfirmModal" class="modal fade show d-block" tabindex="-1"
+    style="background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:100000;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius:22px;overflow:hidden;">
+        <div class="modal-body text-center p-5">
+          <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+            style="width:68px;height:68px;" [style.background]="confirmType==='approve'?'#D1FAE5':'#FFE4E4'">
+            <i class="fa-solid fa-2x" [ngClass]="confirmType==='approve'?'fa-circle-check':'fa-circle-xmark'"
+              [style.color]="confirmType==='approve'?'#00B536':'#F13E3E'"></i>
+          </div>
+          <h5 class="ct_fs_20 ct_fw_700 mb-2 text-dark">{{ confirmTitle }}</h5>
+          <p class="ct_text_para ct_fs_14 mb-4 px-2">{{ confirmMessage }}</p>
+          <div class="d-flex justify-content-center gap-3">
+            <button type="button" class="btn px-4 py-2 fw-semibold"
+              style="background:#F5F5F5;color:#555;border:none;border-radius:10px;min-width:110px;"
+              [disabled]="isActionLoading" (click)="closeConfirmModal()">Cancel</button>
+            <button type="button"
+              class="btn text-white px-4 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-2"
+              style="min-width:140px;border:none;border-radius:10px;"
+              [style.background]="confirmType==='approve'?'linear-gradient(135deg,#00B536,#00932C)':'linear-gradient(135deg,#F13E3E,#CC2828)'"
+              [disabled]="isActionLoading" (click)="onConfirm()">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                *ngIf="isActionLoading"></span>
+              <i class="fa-solid" *ngIf="!isActionLoading" style="font-size:12px;"
+                [ngClass]="confirmType==='approve'?'fa-check':'fa-times'"></i>
+              {{ isActionLoading ? 'Processing...' : (confirmType === 'approve' ? 'Yes, Approve' : 'Yes, Reject') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -42,12 +42,18 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
 
   private updateProfileState(adminUser: any): void {
     try {
-      this.adminName = adminUser.name || adminUser.fullName || adminUser.firstName || 'Ali';
+      this.adminName = adminUser.name || adminUser.fullName || adminUser.firstName || 'Admin';
       this.adminEmail = adminUser.email || '';
       this.profileImage = adminUser.profileImage || null;
     } catch (e) {
       console.error('Error updating admin profile state', e);
     }
+  }
+
+  isGenericAdminName(): boolean {
+    if (!this.adminName) return true;
+    const name = this.adminName.trim().toUpperCase();
+    return name === 'TIA GLOBAL' || name === 'TIAG' || name === 'ADMIN';
   }
 
   getProfileImageUrl(): string {

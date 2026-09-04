@@ -1,8 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
+
+export interface TeacherEnrollment {
+  s_no?: number;
+  id: string | number;
+  numericId?: number;
+  teacher_name?: string;
+  fullName?: string;
+  firstName?: string;
+  lastName?: string;
+  name?: string;
+  gmail?: string;
+  email?: string;
+  phone_number?: string;
+  phone?: string;
+  qualification?: string;
+  specialization?: string;
+  subject?: string;
+  teachingGrade?: string;
+  yearsOfExperience?: number;
+  status?: string;
+  approvalStatus?: string;
+  date?: string;
+  formatted_date?: string;
+  createdAt?: string;
+}
 
 @Component({
   selector: 'app-teacher-enrollment',
@@ -11,8 +38,8 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './teacher-enrollment.component.html',
   styleUrls: []
 })
-export class TeacherEnrollmentComponent implements OnInit {
-  teachers: any[] = [];
+export class TeacherEnrollmentComponent implements OnInit, OnDestroy {
+  teachers: TeacherEnrollment[] = [];
   isLoading = false;
 
   // Stats
@@ -24,6 +51,8 @@ export class TeacherEnrollmentComponent implements OnInit {
   // Search & Filter
   searchTerm = '';
   selectedStatus = 'All Status';
+  private searchSubject = new Subject<string>();
+  private searchSubscription?: Subscription;
 
   // Custom Confirm Modal State
   showConfirmModal = false;
@@ -40,74 +69,127 @@ export class TeacherEnrollmentComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
+    // Setup debounced search handler
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.fetchTeachers();
+    });
+
     this.fetchTeachers();
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription?.unsubscribe();
+  }
+
+  onSearchChange(value: string): void {
+    this.currentPage = 1;
+    this.searchSubject.next(value);
   }
 
   fetchTeachers(): void {
     this.isLoading = true;
-    this.apiService.get<any>('admin/teachers').subscribe({
+    const params: { [key: string]: any } = {};
+
+    if (this.searchTerm && this.searchTerm.trim()) {
+      params['search'] = this.searchTerm.trim();
+    }
+
+    if (this.selectedStatus && this.selectedStatus !== 'All Status') {
+      params['status'] = this.selectedStatus.toUpperCase();
+    }
+
+    this.apiService.get<any>('admin/teacher-enrollments', params).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response && response.success && response.data) {
           const data = response.data;
-          if (Array.isArray(data)) {
+          if (data.stats) {
+            this.totalTeachers = data.stats.total_teachers ?? 0;
+            this.pendingTeachers = data.stats.pending_applications ?? 0;
+            this.approvedTeachers = data.stats.approved_applications ?? 0;
+            this.rejectedTeachers = data.stats.rejected_applications ?? 0;
+          }
+          if (Array.isArray(data.enrollments)) {
+            this.teachers = data.enrollments;
+          } else if (Array.isArray(data)) {
             this.teachers = data;
-          } else if (data.teachers && Array.isArray(data.teachers)) {
-            this.teachers = data.teachers;
-            if (data.counts) {
-              this.totalTeachers = data.counts.total ?? 0;
-              this.pendingTeachers = data.counts.pending ?? 0;
-              this.approvedTeachers = data.counts.approved ?? 0;
-              this.rejectedTeachers = data.counts.rejected ?? 0;
-              return;
-            }
           }
         } else if (Array.isArray(response)) {
           this.teachers = response;
         }
-
-        // Calculate counts on the client-side as fallback
-        this.calculateStats();
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Error fetching teachers list:', err);
+        console.error('Error fetching teacher enrollments:', err);
       }
     });
   }
 
-  calculateStats(): void {
-    this.totalTeachers = this.teachers.length;
-    this.pendingTeachers = this.teachers.filter(t => t.approvalStatus?.toLowerCase() === 'pending').length;
-    this.approvedTeachers = this.teachers.filter(
-      t => t.approvalStatus?.toLowerCase() === 'approved' || t.approvalStatus?.toLowerCase() === 'active'
-    ).length;
-    this.rejectedTeachers = this.teachers.filter(t => t.approvalStatus?.toLowerCase() === 'rejected').length;
+  // Pagination
+  currentPage = 1;
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 20, 50];
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = Number(size);
+    this.currentPage = 1;
+  }
+
+  setPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.teachers.length / this.pageSize) || 1;
+  }
+
+  get paginatedTeachers(): TeacherEnrollment[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.teachers.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  get startIndex(): number {
+    return this.teachers.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get endIndex(): number {
+    const end = this.currentPage * this.pageSize;
+    return end > this.teachers.length ? this.teachers.length : end;
+  }
+
+  get pagesArray(): number[] {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const maxVisible = 5;
+    const pages: number[] = [];
+
+    if (total <= maxVisible) {
+      for (let i = 1; i <= total; i++) pages.push(i);
+    } else {
+      let start = Math.max(1, current - 2);
+      let end = Math.min(total, start + maxVisible - 1);
+      if (end - start < maxVisible - 1) {
+        start = Math.max(1, end - maxVisible + 1);
+      }
+      for (let i = start; i <= end; i++) pages.push(i);
+    }
+    return pages;
   }
 
   changeStatusFilter(status: string): void {
     this.selectedStatus = status;
+    this.currentPage = 1;
+    this.fetchTeachers();
   }
 
-  getFilteredTeachers(): any[] {
-    return this.teachers.filter(t => {
-      const name = t.fullName || (t.firstName && t.lastName ? `${t.firstName} ${t.lastName}` : (t.name || ''));
-      const email = t.email || '';
-      const phone = t.phone || '';
-      const status = t.approvalStatus || '';
-
-      const matchesSearch = !this.searchTerm ||
-        name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        phone.includes(this.searchTerm);
-
-      const matchesStatus = this.selectedStatus === 'All Status' ||
-        (this.selectedStatus === 'Approved' && (status.toLowerCase() === 'approved' || status.toLowerCase() === 'active')) ||
-        status.toLowerCase() === this.selectedStatus.toLowerCase();
-
-      return matchesSearch && matchesStatus;
-    });
-  }
+  // Action Loading State
+  isActionLoading = false;
+  actionLoadingId: string | number | null = null;
 
   // Custom Confirm Modal Operations
   openConfirmModal(title: string, message: string, type: 'approve' | 'reject' | 'confirm', action: () => void): void {
@@ -119,15 +201,15 @@ export class TeacherEnrollmentComponent implements OnInit {
   }
 
   closeConfirmModal(): void {
+    if (this.isActionLoading) return;
     this.showConfirmModal = false;
     this.confirmActionFn = null;
   }
 
   onConfirm(): void {
-    if (this.confirmActionFn) {
+    if (this.confirmActionFn && !this.isActionLoading) {
       this.confirmActionFn();
     }
-    this.closeConfirmModal();
   }
 
   triggerToast(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
@@ -139,28 +221,35 @@ export class TeacherEnrollmentComponent implements OnInit {
     }, 4000);
   }
 
-  approveTeacher(id: number): void {
+  approveTeacher(id: number | string): void {
     this.openConfirmModal(
       'Approve Teacher Registration',
-      'Are you sure you want to approve this teacher request?',
+      'Are you sure you want to approve this teacher registration request?',
       'approve',
       () => {
-        this.apiService.patch<any>(`admin/users/${id}/approval`, {
-          role: 'teacher',
-          status: 'active'
+        this.isActionLoading = true;
+        this.actionLoadingId = id;
+        this.apiService.patch<any>(`admin/teacher-enrollments/${id}/status`, {
+          status: 'APPROVED'
         }).subscribe({
           next: () => {
+            this.isActionLoading = false;
+            this.actionLoadingId = null;
+            this.showConfirmModal = false;
+            this.confirmActionFn = null;
             this.triggerToast('Teacher request approved successfully!', 'success');
             this.fetchTeachers();
           },
           error: (err) => {
+            this.isActionLoading = false;
+            this.actionLoadingId = null;
+            this.showConfirmModal = false;
+            this.confirmActionFn = null;
             console.error('Error approving teacher:', err);
             this.triggerToast('Failed to approve teacher application.', 'error');
-            // Fallback UI mock update if backend is partially implemented
-            const teacher = this.teachers.find(t => t.id === id);
+            const teacher = this.teachers.find(t => (t.id === id || t.numericId === id));
             if (teacher) {
-              teacher.approvalStatus = 'active';
-              this.calculateStats();
+              teacher.status = 'APPROVED';
             }
           }
         });
@@ -168,28 +257,35 @@ export class TeacherEnrollmentComponent implements OnInit {
     );
   }
 
-  rejectTeacher(id: number): void {
+  rejectTeacher(id: number | string): void {
     this.openConfirmModal(
       'Reject Teacher Registration',
-      'Are you sure you want to reject this teacher request?',
+      'Are you sure you want to reject this teacher registration request?',
       'reject',
       () => {
-        this.apiService.patch<any>(`admin/users/${id}/approval`, {
-          role: 'teacher',
-          status: 'inactive'
+        this.isActionLoading = true;
+        this.actionLoadingId = id;
+        this.apiService.patch<any>(`admin/teacher-enrollments/${id}/status`, {
+          status: 'REJECTED'
         }).subscribe({
           next: () => {
+            this.isActionLoading = false;
+            this.actionLoadingId = null;
+            this.showConfirmModal = false;
+            this.confirmActionFn = null;
             this.triggerToast('Teacher request rejected successfully!', 'success');
             this.fetchTeachers();
           },
           error: (err) => {
+            this.isActionLoading = false;
+            this.actionLoadingId = null;
+            this.showConfirmModal = false;
+            this.confirmActionFn = null;
             console.error('Error rejecting teacher:', err);
-            this.triggerToast('Failed to reject teacher application.', 'error');
-            // Fallback UI mock update if backend is partially implemented
-            const teacher = this.teachers.find(t => t.id === id);
+            this.triggerToast('Failed to reject teacher registration.', 'error');
+            const teacher = this.teachers.find(t => (t.id === id || t.numericId === id));
             if (teacher) {
-              teacher.approvalStatus = 'rejected';
-              this.calculateStats();
+              teacher.status = 'REJECTED';
             }
           }
         });

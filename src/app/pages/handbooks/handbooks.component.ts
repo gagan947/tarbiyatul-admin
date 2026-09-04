@@ -20,6 +20,11 @@ export class HandbooksComponent implements OnInit {
   newGradeLevel = '';
   selectedFile: File | null = null;
 
+  // Individual Field Validation Errors
+  titleError = '';
+  gradeLevelError = '';
+  fileError = '';
+
   // UI States
   showConfirmModal = false;
   handbookToDelete: number | null = null;
@@ -30,6 +35,7 @@ export class HandbooksComponent implements OnInit {
   toastMessage = '';
   toastType: 'success' | 'error' | 'info' = 'info';
   gradeLevels: string[] = [
+    'Pre-K',
     'Kindergarten',
     '1st Grade',
     '2nd Grade',
@@ -66,15 +72,32 @@ export class HandbooksComponent implements OnInit {
   }
 
   onAddHandbook(): void {
-    if (!this.newTitle || !this.newGradeLevel || !this.selectedFile) {
-      this.showToast('Please fill all fields and select a file.', 'error');
-      return;
+    // Reset errors
+    this.titleError = '';
+    this.gradeLevelError = '';
+    this.fileError = '';
+
+    let hasError = false;
+
+    if (!this.newTitle || !this.newTitle.trim()) {
+      this.titleError = 'Handbook title is required.';
+      hasError = true;
+    }
+    if (!this.newGradeLevel) {
+      this.gradeLevelError = 'Please select a grade level.';
+      hasError = true;
+    }
+    if (!this.selectedFile) {
+      this.fileError = 'Please upload a PDF document.';
+      hasError = true;
     }
 
+    if (hasError) return;
+
     const formData = new FormData();
-    formData.append('title', this.newTitle);
+    formData.append('title', this.newTitle.trim());
     formData.append('grade_level', this.newGradeLevel);
-    formData.append('file', this.selectedFile);
+    formData.append('file', this.selectedFile!);
 
     this.isLoading = true;
     this.handbookService.addHandbook(formData).subscribe({
@@ -98,6 +121,9 @@ export class HandbooksComponent implements OnInit {
     this.newTitle = '';
     this.newGradeLevel = '';
     this.selectedFile = null;
+    this.titleError = '';
+    this.gradeLevelError = '';
+    this.fileError = '';
   }
 
   confirmDelete(id: number): void {

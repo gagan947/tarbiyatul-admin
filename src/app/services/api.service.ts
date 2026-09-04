@@ -48,4 +48,15 @@ export class ApiService {
   delete<T>(endpoint: string): Observable<T> {
     return this.http.delete<T>(`${this.baseUrl}${endpoint}`);
   }
+
+  /**
+   * Universal File Upload Helper (POST /api/upload/file?folder=...)
+   * Allowed folders: forms, receipts, avatars, worksheets, handbooks, submissions, resumes, general
+   */
+  uploadFile(file: File, folder: string = 'general'): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const params = new HttpParams().set('folder', folder);
+    return this.http.post<any>(`${this.baseUrl}upload/file`, formData, { params });
+  }
 }
