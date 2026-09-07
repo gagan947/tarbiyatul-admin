@@ -83,14 +83,6 @@ export class FeePaymentComponent implements OnInit, AfterViewInit, OnDestroy {
     '2nd Grade',
     '3rd Grade',
     '4th Grade',
-    '5th Grade',
-    '6th Grade',
-    '7th Grade',
-    '8th Grade',
-    '9th Grade',
-    '10th Grade',
-    '11th Grade',
-    '12th Grade'
   ];
 
   // Pagination
@@ -102,7 +94,7 @@ export class FeePaymentComponent implements OnInit, AfterViewInit, OnDestroy {
   private searchSubscription?: Subscription;
   private chartInstance: any = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.searchSubscription = this.searchSubject.pipe(
